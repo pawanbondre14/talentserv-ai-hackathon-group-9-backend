@@ -14,8 +14,8 @@ setup_logging(settings)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Dev convenience: create tables if migration not run yet
-    if settings.debug:
+    # Local dev only — never run DDL on Vercel/Lambda (fails cold start + IPv6 pool issues)
+    if settings.should_bootstrap_schema:
         Base.metadata.create_all(bind=engine)
     yield
 

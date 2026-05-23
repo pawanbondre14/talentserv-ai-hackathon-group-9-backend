@@ -17,6 +17,7 @@ _JSON_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
 MODE_LABELS = {
     "meeting": "Meeting Minutes",
     "interview": "Interview Feedback",
+    "jd": "JD Analysis",
 }
 
 
@@ -104,6 +105,15 @@ def _mock_meeting() -> dict[str, Any]:
     }
 
 
+def _mock_jd_analysis() -> dict[str, Any]:
+    return {
+        "overall_fit_score": 7,
+        "matched_requirements": ["Python backend experience", "REST API design"],
+        "gaps": ["Limited cloud-native architecture examples"],
+        "summary": "Good fit for mid-level backend role with mentorship on distributed systems.",
+    }
+
+
 def _mock_interview() -> dict[str, Any]:
     return {
         "candidate_summary": "Strong communicator with solid fundamentals; some gaps in system design depth.",
@@ -119,6 +129,23 @@ def _mock_interview() -> dict[str, Any]:
         "rating": "Proceed",
         "rationale": "Meets bar for mid-level role with coaching on design.",
         "follow_up_questions": ["Describe a production incident you led end-to-end."],
+        "qa_pairs": [
+            {
+                "question": "Walk me through a recent API you designed.",
+                "answer": "Described REST resources and pagination approach.",
+                "notes": "Solid fundamentals",
+            },
+            {
+                "question": "How do you debug production issues?",
+                "answer": "Structured logging and reproduction in staging.",
+                "notes": "",
+            },
+        ],
+        "scorecard_scores": [
+            {"criterion": "Coding & debugging", "criterion_id": "coding", "score": 4, "notes": "Clear examples"},
+            {"criterion": "System design", "criterion_id": "system_design", "score": 3, "notes": "Limited scale"},
+            {"criterion": "API design & data modeling", "criterion_id": "api_design", "score": 4, "notes": ""},
+        ],
     }
 
 
@@ -194,7 +221,12 @@ def complete_json(
             label,
             sid,
         )
-        data = _mock_interview() if mode == "interview" else _mock_meeting()
+        if mode == "jd":
+            data = _mock_jd_analysis()
+        elif mode == "interview":
+            data = _mock_interview()
+        else:
+            data = _mock_meeting()
         elapsed = time.perf_counter() - started
         logger.info(
             "[%s] MOCK generation complete (session_id=%s, elapsed=%.2fs)",
@@ -297,13 +329,9 @@ def process_transcript(
     )
 
     if mode == "interview":
-        return complete_json(
-            settings,
-            INTERVIEW_FEEDBACK_SYSTEM,
-            interview_feedback_prompt(transcript),
-            mode="interview",
-            session_id=session_id,
-        )
+        from app.services.interview_processor import process_interview
+
+        return process_interview(settings, transcript, None, session_id=session_id)
     return complete_json(
         settings,
         MEETING_MINUTES_SYSTEM,

@@ -4,7 +4,8 @@ Base ratings on transcript evidence. rating must be exactly one of: Proceed, Hol
 For skill areas not covered, use "Not assessed"."""
 
 
-def interview_feedback_prompt(transcript: str) -> str:
+def interview_feedback_prompt(transcript: str, extra_instructions: str = "") -> str:
+    extra = f"\n\n{extra_instructions}" if extra_instructions else ""
     return f"""Analyze this interview transcript and return JSON with exactly these keys:
 
 {{
@@ -20,9 +21,15 @@ def interview_feedback_prompt(transcript: str) -> str:
   "communication_assessment": "",
   "rating": "Proceed|Hold|Reject",
   "rationale": "",
-  "follow_up_questions": []
+  "follow_up_questions": [],
+  "qa_pairs": [
+    {{"question": "interviewer question", "answer": "candidate answer summary", "notes": ""}}
+  ],
+  "scorecard_scores": []
 }}
 
+Include qa_pairs for distinct Q&A exchanges found in the transcript.
+{extra}
 TRANSCRIPT:
 {transcript}
 """

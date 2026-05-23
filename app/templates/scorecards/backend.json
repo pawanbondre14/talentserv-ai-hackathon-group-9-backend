@@ -1,0 +1,11 @@
+{
+  "id": "backend",
+  "title": "Backend Engineer",
+  "criteria": [
+    { "id": "api_design", "label": "API design & data modeling", "weight": 1.2 },
+    { "id": "coding", "label": "Coding & debugging", "weight": 1.0 },
+    { "id": "system_design", "label": "System design", "weight": 1.3 },
+    { "id": "databases", "label": "Databases & performance", "weight": 1.0 },
+    { "id": "collaboration", "label": "Collaboration & communication", "weight": 0.8 }
+  ]
+}

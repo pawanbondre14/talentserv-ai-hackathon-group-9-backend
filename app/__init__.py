@@ -1,1 +1,1 @@
-"""MeetingFeed AI — FastAPI backend."""
+"""MeetPilot AI — FastAPI backend."""

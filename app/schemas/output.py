@@ -4,6 +4,7 @@ from uuid import UUID
 
 from pydantic import BaseModel, Field
 
+from app.schemas.interview import InterviewMetaOut
 from app.schemas.session import SessionDetail
 
 
@@ -31,5 +32,6 @@ class ProcessResponse(BaseModel):
 
 class SessionWithOutput(SessionDetail):
     output: OutputSchema | None = None
+    interview_meta: InterviewMetaOut | None = None
 
     model_config = {"from_attributes": True}

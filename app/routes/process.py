@@ -11,8 +11,10 @@ from app.database import get_db
 from app.models import Output, SessionRecord
 from app.routes.sessions import _word_count
 from app.services.search_index import build_search_blob
-from app.schemas.output import OutputSchema, OutputUpdate, ProcessResponse, SessionWithOutput
+from app.schemas.interview import ProcessRequest
+from app.schemas.output import InterviewMetaOut, OutputSchema, OutputUpdate, ProcessResponse, SessionWithOutput
 from app.schemas.session import SessionDetail
+from app.services.interview_processor import process_interview, save_interview_meta_for_session
 from app.services.llm import _should_mock, process_transcript
 from app.services.normalize import normalize_transcript, truncate_transcript, word_count
 
@@ -23,7 +25,10 @@ logger = logging.getLogger(__name__)
 def _get_user_session(db: Session, user_id: uuid.UUID, session_id: uuid.UUID) -> SessionRecord:
     session = (
         db.query(SessionRecord)
-        .options(joinedload(SessionRecord.output))
+        .options(
+            joinedload(SessionRecord.output),
+            joinedload(SessionRecord.interview_meta),
+        )
         .filter(SessionRecord.id == session_id, SessionRecord.user_id == user_id)
         .first()
     )
@@ -43,12 +48,15 @@ def get_session_with_output(
     out = session.output
     payload = SessionDetail.model_validate(session).model_dump()
     payload["output"] = OutputSchema.model_validate(out) if out else None
+    meta = session.interview_meta
+    payload["interview_meta"] = InterviewMetaOut.model_validate(meta) if meta else None
     return payload
 
 
 @router.post("/{session_id}/process", response_model=ProcessResponse)
 def process_session(
     session_id: uuid.UUID,
+    body: ProcessRequest | None = None,
     db: Session = Depends(get_db),
     auth: AuthUser = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
@@ -82,15 +90,27 @@ def process_session(
         truncated,
     )
 
+    interview_options = body.interview_options if body else None
+    if session.mode == "interview":
+        save_interview_meta_for_session(db, session, interview_options)
+
     started = time.perf_counter()
     try:
-        result = process_transcript(
-            settings,
-            session.mode,
-            text,
-            session_id=str(session_id),
-            word_count=wc,
-        )
+        if session.mode == "interview":
+            result = process_interview(
+                settings,
+                text,
+                interview_options,
+                session_id=str(session_id),
+            )
+        else:
+            result = process_transcript(
+                settings,
+                session.mode,
+                text,
+                session_id=str(session_id),
+                word_count=wc,
+            )
 
         output_row = session.output
         if output_row:

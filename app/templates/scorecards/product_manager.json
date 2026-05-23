@@ -1,0 +1,11 @@
+{
+  "id": "product_manager",
+  "title": "Product Manager",
+  "criteria": [
+    { "id": "product_sense", "label": "Product sense & prioritization", "weight": 1.3 },
+    { "id": "stakeholders", "label": "Stakeholder management", "weight": 1.1 },
+    { "id": "data", "label": "Data-informed decisions", "weight": 1.0 },
+    { "id": "execution", "label": "Execution & delivery", "weight": 1.0 },
+    { "id": "communication", "label": "Communication", "weight": 1.0 }
+  ]
+}

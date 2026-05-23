@@ -1,4 +1,4 @@
--- MeetingFeed AI — initial schema (run in Supabase SQL Editor)
+-- MeetPilot AI — initial schema (run in Supabase SQL Editor)
 
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
 

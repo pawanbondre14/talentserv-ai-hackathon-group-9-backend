@@ -26,6 +26,10 @@ class AuthUser:
     email: str | None = None
 
 
+def _normalize_issuer(issuer: str) -> str:
+    return issuer.rstrip("/")
+
+
 def verify_clerk_token(token: str, settings: Settings) -> AuthUser:
     if not settings.clerk_jwks_url or not settings.clerk_issuer:
         raise HTTPException(
@@ -33,20 +37,29 @@ def verify_clerk_token(token: str, settings: Settings) -> AuthUser:
             detail="Clerk is not configured on the server.",
         )
 
+    issuer = _normalize_issuer(settings.clerk_issuer)
+    jwks_url = settings.clerk_jwks_url.rstrip("/")
+    if not jwks_url.endswith("/.well-known/jwks.json"):
+        jwks_url = f"{issuer}/.well-known/jwks.json"
+
     try:
-        client = _get_jwks_client(settings.clerk_jwks_url)
+        client = _get_jwks_client(jwks_url)
         signing_key = client.get_signing_key_from_jwt(token)
         payload = jwt.decode(
             token,
             signing_key.key,
             algorithms=["RS256"],
-            issuer=settings.clerk_issuer,
+            issuer=issuer,
+            leeway=60,
             options={"verify_aud": False},
         )
     except jwt.PyJWTError as exc:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Invalid or expired token.",
+            detail=(
+                "Invalid or expired Clerk session. Sign in again at the app (not via /docs). "
+                f"Verify CLERK_ISSUER matches your Clerk dashboard ({issuer})."
+            ),
         ) from exc
 
     sub = payload.get("sub")
@@ -72,7 +85,10 @@ async def get_current_user(
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Authentication required.",
+            detail=(
+                "Authentication required. Sign in at the React app first, then use "
+                "'Connect Microsoft account' — do not open /api/microsoft/auth-url in the browser."
+            ),
             headers={"WWW-Authenticate": "Bearer"},
         )
 

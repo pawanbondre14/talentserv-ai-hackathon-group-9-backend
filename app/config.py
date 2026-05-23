@@ -1,3 +1,4 @@
+import os
 from functools import lru_cache
 from urllib.parse import quote_plus
 
@@ -25,9 +26,10 @@ class Settings(BaseSettings):
         extra="ignore",
     )
 
-    app_name: str = "MeetingFeed AI"
+    app_name: str = "MeetPilot AI"
     environment: str = "development"
     debug: bool = True
+    bootstrap_schema: bool = False
     api_prefix: str = "/api"
 
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
@@ -65,6 +67,20 @@ class Settings(BaseSettings):
     @property
     def database_url_resolved(self) -> str:
         return normalize_database_url(self.database_url)
+
+    @property
+    def is_serverless(self) -> bool:
+        """Vercel / AWS Lambda — no persistent DB pool; avoid startup DDL."""
+        return bool(
+            os.getenv("VERCEL")
+            or os.getenv("VERCEL_ENV")
+            or os.getenv("AWS_LAMBDA_FUNCTION_NAME")
+            or os.getenv("SERVERLESS", "").lower() in ("1", "true", "yes")
+        )
+
+    @property
+    def should_bootstrap_schema(self) -> bool:
+        return self.bootstrap_schema and self.debug and not self.is_serverless
 
 
 @lru_cache
