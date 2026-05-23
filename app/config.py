@@ -2,6 +2,7 @@ import os
 from functools import lru_cache
 from urllib.parse import quote_plus
 
+from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -69,6 +70,11 @@ class Settings(BaseSettings):
         return normalize_database_url(self.database_url)
 
     @property
+    def uses_direct_supabase_host(self) -> bool:
+        url = self.database_url_resolved
+        return "db." in url and ".supabase.co" in url and "pooler" not in url
+
+    @property
     def is_serverless(self) -> bool:
         """Vercel / AWS Lambda — no persistent DB pool; avoid startup DDL."""
         return bool(
@@ -78,9 +84,14 @@ class Settings(BaseSettings):
             or os.getenv("SERVERLESS", "").lower() in ("1", "true", "yes")
         )
 
-    @property
-    def should_bootstrap_schema(self) -> bool:
-        return self.bootstrap_schema and self.debug and not self.is_serverless
+    @model_validator(mode="after")
+    def serverless_safety(self):
+        """Vercel must not use DEBUG=true or direct db.* URLs at cold start."""
+        if self.is_serverless:
+            object.__setattr__(self, "bootstrap_schema", False)
+            if self.debug:
+                object.__setattr__(self, "debug", False)
+        return self
 
 
 @lru_cache
