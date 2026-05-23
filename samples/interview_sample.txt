@@ -1,0 +1,9 @@
+Interviewer: Tell me about a recent project you shipped.
+Candidate: I led a REST API migration for our billing service using Python and FastAPI.
+Interviewer: How did you handle production issues?
+Candidate: We had an outage due to a connection pool misconfiguration. I wrote a postmortem and added monitoring.
+Interviewer: What's your experience with system design at scale?
+Candidate: Mostly services up to moderate traffic. I haven't designed multi-region architectures yet.
+Interviewer: Communication seems strong. Any concerns on our side?
+Candidate: I'd like to learn more about your on-call rotation.
+Interviewer: We'll follow up on a system design scenario in round two.

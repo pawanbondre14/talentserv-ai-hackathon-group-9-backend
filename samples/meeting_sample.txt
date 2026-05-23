@@ -1,0 +1,8 @@
+Alex: Welcome everyone to sprint planning.
+Jordan: Thanks Alex. We need to finalize the API spec before the feature freeze.
+Alex: Agreed. Decision: we ship MVP by June 15 given customer commitments.
+Jordan: I'll own the API spec. Priority is high — due next Friday if possible.
+Alex: Risk — backend team is at capacity with two engineers on leave.
+Jordan: Follow up on hiring plan in next week's staff meeting.
+Sam: Discussion on mobile scope — we're deferring push notifications to v2.
+Alex: Noted. Any other topics? No. Meeting adjourned.

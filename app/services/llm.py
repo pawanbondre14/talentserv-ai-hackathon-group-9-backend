@@ -1,0 +1,313 @@
+import json
+import logging
+import re
+import time
+from typing import Any
+
+from fastapi import HTTPException
+
+from app.config import Settings
+from app.prompts.interview_feedback import INTERVIEW_FEEDBACK_SYSTEM, interview_feedback_prompt
+from app.prompts.meeting_minutes import MEETING_MINUTES_SYSTEM, meeting_minutes_prompt
+
+logger = logging.getLogger(__name__)
+
+_JSON_FENCE = re.compile(r"^```(?:json)?\s*|\s*```$", re.MULTILINE)
+
+MODE_LABELS = {
+    "meeting": "Meeting Minutes",
+    "interview": "Interview Feedback",
+}
+
+
+def _mode_label(mode: str) -> str:
+    return MODE_LABELS.get(mode, mode)
+
+
+def _strip_json_fences(text: str) -> str:
+    t = text.strip()
+    t = _JSON_FENCE.sub("", t).strip()
+    return t
+
+
+def parse_json_response(text: str) -> dict[str, Any]:
+    cleaned = _strip_json_fences(text)
+    try:
+        data = json.loads(cleaned)
+    except json.JSONDecodeError as exc:
+        start = cleaned.find("{")
+        end = cleaned.rfind("}")
+        if start >= 0 and end > start:
+            try:
+                data = json.loads(cleaned[start : end + 1])
+            except json.JSONDecodeError as inner:
+                raise ValueError(f"Invalid JSON from model: {inner}") from exc
+        else:
+            raise ValueError(f"Invalid JSON from model: {exc}") from exc
+    if not isinstance(data, dict):
+        raise ValueError("Model response must be a JSON object.")
+    return data
+
+
+def _log_output_summary(mode: str, data: dict[str, Any]) -> None:
+    label = _mode_label(mode)
+    if mode == "interview":
+        rating = data.get("rating", "—")
+        strengths = len(data.get("strengths") or [])
+        concerns = len(data.get("concerns") or [])
+        logger.info(
+            "[%s] Response summary: rating=%s strengths=%d concerns=%d follow_ups=%d",
+            label,
+            rating,
+            strengths,
+            concerns,
+            len(data.get("follow_up_questions") or []),
+        )
+    else:
+        logger.info(
+            "[%s] Response summary: decisions=%d action_items=%d risks=%d follow_ups=%d",
+            label,
+            len(data.get("decisions") or []),
+            len(data.get("action_items") or []),
+            len(data.get("risks") or []),
+            len(data.get("follow_ups") or []),
+        )
+
+
+def _mock_meeting() -> dict[str, Any]:
+    return {
+        "executive_summary": "Team aligned on Q2 priorities and ownership for delivery.",
+        "discussion_points": [
+            {
+                "topic": "Roadmap",
+                "summary": "Discussed feature freeze date and scope.",
+                "participants": ["Alex", "Jordan"],
+            }
+        ],
+        "decisions": [
+            {
+                "decision": "Ship MVP by June 15",
+                "rationale": "Customer commitments require early delivery.",
+                "owner": "Alex",
+            }
+        ],
+        "action_items": [
+            {
+                "task": "Finalize API spec",
+                "owner": "Jordan",
+                "due_date": "not specified",
+                "priority": "High",
+            }
+        ],
+        "risks": ["Capacity constraints on backend team"],
+        "follow_ups": ["Review hiring plan next week"],
+    }
+
+
+def _mock_interview() -> dict[str, Any]:
+    return {
+        "candidate_summary": "Strong communicator with solid fundamentals; some gaps in system design depth.",
+        "skill_observations": {
+            "technical_skills": "Comfortable with Python and REST APIs.",
+            "communication": "Clear and structured answers.",
+            "problem_solving": "Good approach on coding exercise.",
+            "culture_fit": "Not assessed",
+        },
+        "strengths": ["Clear communication", "Practical debugging approach"],
+        "concerns": ["Limited large-scale architecture examples"],
+        "communication_assessment": "Professional and concise.",
+        "rating": "Proceed",
+        "rationale": "Meets bar for mid-level role with coaching on design.",
+        "follow_up_questions": ["Describe a production incident you led end-to-end."],
+    }
+
+
+def _should_mock(settings: Settings) -> bool:
+    if settings.llm_mock:
+        return True
+    if settings.llm_provider == "openai":
+        return not settings.openai_api_key
+    return not settings.anthropic_api_key
+
+
+def _call_anthropic(settings: Settings, system: str, user_prompt: str, mode: str) -> str:
+    import anthropic
+
+    label = _mode_label(mode)
+    logger.info(
+        "[%s] Calling Anthropic model=%s (prompt_chars=%d)",
+        label,
+        settings.anthropic_model,
+        len(user_prompt),
+    )
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    message = client.messages.create(
+        model=settings.anthropic_model,
+        max_tokens=8192,
+        system=system,
+        messages=[{"role": "user", "content": user_prompt}],
+    )
+    parts = [block.text for block in message.content if hasattr(block, "text")]
+    raw = "\n".join(parts)
+    logger.info("[%s] Anthropic response received (chars=%d)", label, len(raw))
+    return raw
+
+
+def _call_openai(settings: Settings, system: str, user_prompt: str, mode: str) -> str:
+    from openai import OpenAI
+
+    label = _mode_label(mode)
+    logger.info(
+        "[%s] Calling OpenAI model=%s (prompt_chars=%d)",
+        label,
+        settings.openai_model,
+        len(user_prompt),
+    )
+    client = OpenAI(api_key=settings.openai_api_key)
+    response = client.chat.completions.create(
+        model=settings.openai_model,
+        messages=[
+            {"role": "system", "content": system},
+            {"role": "user", "content": user_prompt},
+        ],
+        response_format={"type": "json_object"},
+    )
+    raw = response.choices[0].message.content or ""
+    logger.info("[%s] OpenAI response received (chars=%d)", label, len(raw))
+    return raw
+
+
+def complete_json(
+    settings: Settings,
+    system: str,
+    user_prompt: str,
+    mode: str = "meeting",
+    session_id: str | None = None,
+) -> dict[str, Any]:
+    label = _mode_label(mode)
+    sid = session_id or "—"
+    started = time.perf_counter()
+
+    if _should_mock(settings):
+        logger.info(
+            "[%s] Generating MOCK response (session_id=%s) — no live API call",
+            label,
+            sid,
+        )
+        data = _mock_interview() if mode == "interview" else _mock_meeting()
+        elapsed = time.perf_counter() - started
+        logger.info(
+            "[%s] MOCK generation complete (session_id=%s, elapsed=%.2fs)",
+            label,
+            sid,
+            elapsed,
+        )
+        _log_output_summary(mode, data)
+        return data
+
+    provider = settings.llm_provider
+    logger.info(
+        "[%s] Starting LIVE AI generation (session_id=%s, provider=%s)",
+        label,
+        sid,
+        provider,
+    )
+
+    raw = ""
+    last_error: Exception | None = None
+    for attempt in range(2):
+        try:
+            if attempt > 0:
+                logger.warning(
+                    "[%s] Retrying AI call after invalid JSON (session_id=%s, attempt=%d)",
+                    label,
+                    sid,
+                    attempt + 1,
+                )
+            if settings.llm_provider == "openai":
+                if not settings.openai_api_key:
+                    raise HTTPException(500, "OPENAI_API_KEY is not configured.")
+                raw = _call_openai(settings, system, user_prompt, mode)
+            else:
+                if not settings.anthropic_api_key:
+                    raise HTTPException(500, "ANTHROPIC_API_KEY is not configured.")
+                raw = _call_anthropic(settings, system, user_prompt, mode)
+            data = parse_json_response(raw)
+            elapsed = time.perf_counter() - started
+            logger.info(
+                "[%s] LIVE generation SUCCESS (session_id=%s, provider=%s, elapsed=%.2fs)",
+                label,
+                sid,
+                provider,
+                elapsed,
+            )
+            _log_output_summary(mode, data)
+            return data
+        except HTTPException:
+            elapsed = time.perf_counter() - started
+            logger.error(
+                "[%s] LIVE generation FAILED — HTTP error (session_id=%s, elapsed=%.2fs)",
+                label,
+                sid,
+                elapsed,
+            )
+            raise
+        except Exception as exc:
+            last_error = exc
+            logger.warning(
+                "[%s] Parse/API error (session_id=%s): %s",
+                label,
+                sid,
+                exc,
+            )
+            user_prompt = (
+                user_prompt
+                + "\n\nYour previous response was invalid JSON. Return ONLY a valid JSON object."
+            )
+
+    elapsed = time.perf_counter() - started
+    logger.error(
+        "[%s] LIVE generation FAILED after retries (session_id=%s, elapsed=%.2fs): %s",
+        label,
+        sid,
+        elapsed,
+        last_error,
+    )
+    raise HTTPException(
+        status_code=502,
+        detail=f"AI processing failed: {last_error}",
+    ) from last_error
+
+
+def process_transcript(
+    settings: Settings,
+    mode: str,
+    transcript: str,
+    session_id: str | None = None,
+    word_count: int | None = None,
+) -> dict[str, Any]:
+    label = _mode_label(mode)
+    wc = word_count if word_count is not None else len(transcript.split())
+    logger.info(
+        "[%s] process_transcript invoked (session_id=%s, words=%d, chars=%d)",
+        label,
+        session_id or "—",
+        wc,
+        len(transcript),
+    )
+
+    if mode == "interview":
+        return complete_json(
+            settings,
+            INTERVIEW_FEEDBACK_SYSTEM,
+            interview_feedback_prompt(transcript),
+            mode="interview",
+            session_id=session_id,
+        )
+    return complete_json(
+        settings,
+        MEETING_MINUTES_SYSTEM,
+        meeting_minutes_prompt(transcript),
+        mode="meeting",
+        session_id=session_id,
+    )
