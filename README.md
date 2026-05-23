@@ -6,7 +6,14 @@ FastAPI backend for **Meeting Feed Generator AI**: sessions, transcripts, AI pro
 
 - Health checks, Clerk JWT, session CRUD + search, Supabase schema
 
-## Phase 2 (current)
+## Phase 4 (current)
+
+- Microsoft OAuth + OneDrive `Recordings` folder listing (`.vtt` transcripts)
+- Mock Teams meetings (always available)
+- `GET /api/teams/transcripts`, `POST /api/teams/import`
+- `GET /api/microsoft/auth-url`, callback, disconnect
+
+## Phase 2
 
 - `POST /api/sessions/{id}/process` — meeting minutes or interview feedback
 - `GET /api/sessions/{id}/full` — session + output

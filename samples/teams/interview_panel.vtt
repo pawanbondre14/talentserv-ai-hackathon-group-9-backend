@@ -1,0 +1,25 @@
+WEBVTT
+
+1
+00:00:01.000 --> 00:00:08.000
+Interviewer: Tell me about a recent project you shipped.
+
+2
+00:00:08.500 --> 00:00:16.000
+Candidate: I led a REST API migration for our billing service using Python and FastAPI.
+
+3
+00:00:16.500 --> 00:00:24.000
+Interviewer: How did you handle production issues?
+
+4
+00:00:24.500 --> 00:00:32.000
+Candidate: We had an outage due to connection pool misconfiguration. I wrote a postmortem.
+
+5
+00:00:32.500 --> 00:00:40.000
+Interviewer: What is your experience with system design at scale?
+
+6
+00:00:40.500 --> 00:00:48.000
+Candidate: Mostly moderate traffic services. I have not designed multi-region architectures yet.

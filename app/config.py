@@ -48,6 +48,16 @@ class Settings(BaseSettings):
     max_transcript_chars: int = 120_000
     llm_mock: bool = False
 
+    # Microsoft Teams / OneDrive (Phase 4)
+    azure_client_id: str = ""
+    azure_client_secret: str = ""
+    azure_tenant_id: str = "common"
+    azure_redirect_uri: str = "http://localhost:8000/api/microsoft/callback"
+    azure_scopes: str = "openid profile offline_access User.Read Files.Read.All"
+    frontend_url: str = "http://localhost:5173"
+    teams_integration_mode: str = "auto"  # auto | mock | live
+    ms_token_encryption_key: str = ""
+
     @property
     def cors_origin_list(self) -> list[str]:
         return [o.strip() for o in self.cors_origins.split(",") if o.strip()]
