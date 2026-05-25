@@ -4,7 +4,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user, get_or_create_db_user
+from app.auth import AuthUser, get_current_user
+from app.errors import get_db_user_or_503
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.schemas.teams import MicrosoftStatusResponse
@@ -25,7 +26,7 @@ def microsoft_status(
     auth: AuthUser = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_or_create_db_user(db, auth)
+    user = get_db_user_or_503(db, auth)
     azure_ok = bool(settings.azure_client_id and settings.azure_client_secret)
     return MicrosoftStatusResponse(
         connected=bool(user.ms_refresh_token_enc),
@@ -45,7 +46,7 @@ def microsoft_auth_url(
             503,
             detail="Microsoft integration is not configured. Use mock Teams data or set Azure env vars.",
         )
-    get_or_create_db_user(db, auth)
+    get_db_user_or_503(db, auth)
     url = build_authorize_url(settings, auth.clerk_user_id)
     return {"url": url}
 
@@ -91,7 +92,7 @@ def microsoft_disconnect(
     db: Session = Depends(get_db),
     auth: AuthUser = Depends(get_current_user),
 ):
-    user = get_or_create_db_user(db, auth)
+    user = get_db_user_or_503(db, auth)
     user.ms_refresh_token_enc = None
     db.commit()
     return {"status": "disconnected"}

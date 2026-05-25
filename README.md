@@ -22,7 +22,16 @@ If you see `401 Invalid or expired token` in Swagger or the browser URL bar, you
 
 **Without Azure** you can still use **Demo — sample meetings** (no Microsoft sign-in required).
 
-## Phase 4 (current)
+## Phase 6 (current)
+
+- Post-session AI chat on session detail
+- `GET /api/sessions/{id}/chat` — message history
+- `POST /api/sessions/{id}/chat` — `{ "content": "..." }` → user + assistant messages
+- `DELETE /api/sessions/{id}/chat` — clear history
+- Requires session `status=ready` with AI output; uses transcript + output JSON as context
+- `LLM_MOCK=true` for demo replies without API keys
+
+## Phase 4
 
 - Microsoft OAuth + OneDrive `Recordings` folder listing (`.vtt` transcripts)
 - Mock Teams meetings (always available)

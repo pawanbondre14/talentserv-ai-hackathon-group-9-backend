@@ -3,7 +3,8 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user, get_or_create_db_user
+from app.auth import AuthUser, get_current_user
+from app.errors import get_db_user_or_503
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.models import SessionRecord
@@ -28,7 +29,7 @@ async def list_teams_transcripts(
     auth: AuthUser = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_or_create_db_user(db, auth)
+    user = get_db_user_or_503(db, auth)
     service = TeamsService(settings)
     items, mode = await service.list_transcripts(user, db)
     return TeamsTranscriptListResponse(
@@ -54,7 +55,7 @@ async def import_teams_transcript(
     auth: AuthUser = Depends(get_current_user),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_or_create_db_user(db, auth)
+    user = get_db_user_or_503(db, auth)
     service = TeamsService(settings)
 
     try:

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 
+from app.routes.chat import router as chat_router
 from app.routes.interview import router as interview_router
 from app.routes.health import router as health_router
 from app.routes.ingest import router as ingest_router
@@ -16,3 +17,4 @@ api_router.include_router(teams_router, prefix="/teams", tags=["teams"])
 api_router.include_router(interview_router, prefix="/interview", tags=["interview"])
 api_router.include_router(sessions_router, prefix="/sessions", tags=["sessions"])
 api_router.include_router(process_router, prefix="/sessions", tags=["process"])
+api_router.include_router(chat_router, prefix="/sessions", tags=["chat"])

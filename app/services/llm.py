@@ -18,6 +18,7 @@ MODE_LABELS = {
     "meeting": "Meeting Minutes",
     "interview": "Interview Feedback",
     "jd": "JD Analysis",
+    "chat": "Session Chat",
 }
 
 
@@ -309,6 +310,96 @@ def complete_json(
         status_code=502,
         detail=f"AI processing failed: {last_error}",
     ) from last_error
+
+
+def _mock_chat_reply(user_message: str) -> str:
+    preview = user_message.strip()[:120]
+    return (
+        f"Based on this session's transcript and AI output (mock): "
+        f'"{preview}" — ask about action items, decisions, risks, or interview rating for more detail.'
+    )
+
+
+def _call_anthropic_chat(
+    settings: Settings,
+    system: str,
+    history: list[dict[str, str]],
+    user_message: str,
+) -> str:
+    import anthropic
+
+    messages: list[dict[str, str]] = []
+    for turn in history[-20:]:
+        role = turn.get("role")
+        if role in ("user", "assistant"):
+            messages.append({"role": role, "content": turn["content"]})
+    messages.append({"role": "user", "content": user_message})
+
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
+    message = client.messages.create(
+        model=settings.anthropic_model,
+        max_tokens=2048,
+        system=system,
+        messages=messages,
+    )
+    parts = [block.text for block in message.content if hasattr(block, "text")]
+    return "\n".join(parts).strip()
+
+
+def _call_openai_chat(
+    settings: Settings,
+    system: str,
+    history: list[dict[str, str]],
+    user_message: str,
+) -> str:
+    from openai import OpenAI
+
+    msgs: list[dict[str, str]] = [{"role": "system", "content": system}]
+    for turn in history[-20:]:
+        role = turn.get("role")
+        if role in ("user", "assistant"):
+            msgs.append({"role": role, "content": turn["content"]})
+    msgs.append({"role": "user", "content": user_message})
+
+    client = OpenAI(api_key=settings.openai_api_key)
+    response = client.chat.completions.create(
+        model=settings.openai_model,
+        messages=msgs,
+        max_tokens=2048,
+    )
+    return (response.choices[0].message.content or "").strip()
+
+
+def complete_chat(
+    settings: Settings,
+    system: str,
+    history: list[dict[str, str]],
+    user_message: str,
+    session_id: str | None = None,
+) -> tuple[str, str]:
+    """Returns (reply_text, provider)."""
+    sid = session_id or "—"
+    if _should_mock(settings):
+        logger.info("[Session Chat] MOCK reply (session_id=%s)", sid)
+        return _mock_chat_reply(user_message), "mock"
+
+    provider = settings.llm_provider
+    logger.info("[Session Chat] LIVE reply (session_id=%s, provider=%s)", sid, provider)
+    try:
+        if provider == "openai":
+            if not settings.openai_api_key:
+                raise HTTPException(500, "OPENAI_API_KEY is not configured.")
+            raw = _call_openai_chat(settings, system, history, user_message)
+        else:
+            if not settings.anthropic_api_key:
+                raise HTTPException(500, "ANTHROPIC_API_KEY is not configured.")
+            raw = _call_anthropic_chat(settings, system, history, user_message)
+        return raw or "I could not generate a reply.", provider
+    except HTTPException:
+        raise
+    except Exception as exc:
+        logger.exception("[Session Chat] failed (session_id=%s): %s", sid, exc)
+        raise HTTPException(status_code=502, detail=f"Chat failed: {exc}") from exc
 
 
 def process_transcript(
