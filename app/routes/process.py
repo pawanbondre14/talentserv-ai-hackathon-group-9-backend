@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session, joinedload
 from app.auth import AuthUser, get_current_user, get_or_create_db_user
 from app.config import Settings, get_settings
 from app.database import get_db
+from app.errors import AI_PROCESSING_FAILED
 from app.models import Output, SessionRecord
 from app.routes.sessions import _word_count
 from app.services.search_index import build_search_blob
@@ -174,7 +175,7 @@ def process_session(
             mode_label,
             elapsed,
         )
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise HTTPException(status_code=502, detail=AI_PROCESSING_FAILED) from exc
 
 
 @router.patch("/{session_id}/output", response_model=OutputSchema)

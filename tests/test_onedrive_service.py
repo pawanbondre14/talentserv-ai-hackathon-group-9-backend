@@ -104,3 +104,13 @@ def test_parse_file_text_vtt():
 def test_parse_file_text_plain():
     body = "Plain transcript text here."
     assert TeamsService.parse_file_text(body) == "Plain transcript text here."
+
+
+def test_onedrive_import_empty_transcript():
+    """Empty transcript after parse maps to 422 via import error handler."""
+    from app.errors import http_exception_from_import
+
+    exc = http_exception_from_import(
+        ValueError("No readable transcript text found in this file.")
+    )
+    assert exc.status_code == 422

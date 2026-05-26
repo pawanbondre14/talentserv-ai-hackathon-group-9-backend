@@ -1,11 +1,12 @@
 import logging
+from urllib.parse import urlencode
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
 from app.auth import AuthUser, get_current_user
-from app.errors import get_db_user_or_503
+from app.errors import get_db_user_or_503, oauth_redirect_message
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.schemas.teams import MicrosoftStatusResponse
@@ -18,6 +19,11 @@ from app.services.microsoft_oauth import (
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
+
+
+def _oauth_redirect(frontend: str, teams: str, message: str) -> RedirectResponse:
+    query = urlencode({"teams": teams, "message": message})
+    return RedirectResponse(f"{frontend}/new?{query}")
 
 
 @router.get("/status", response_model=MicrosoftStatusResponse)
@@ -44,7 +50,7 @@ def microsoft_auth_url(
     if not settings.azure_client_id or not settings.azure_redirect_uri:
         raise HTTPException(
             503,
-            detail="Microsoft integration is not configured. Use mock Teams data or set Azure env vars.",
+            detail="Microsoft integration is not configured on the server. Use demo folders or ask an admin to set Azure env vars.",
         )
     get_db_user_or_503(db, auth)
     url = build_authorize_url(settings, auth.clerk_user_id)
@@ -61,7 +67,7 @@ async def microsoft_callback(
 ):
     frontend = settings.frontend_url.rstrip("/")
     if error:
-        return RedirectResponse(f"{frontend}/new?teams=error&message={error}")
+        return _oauth_redirect(frontend, "error", oauth_redirect_message(error))
     if not code or not state:
         raise HTTPException(400, detail="Missing code or state from Microsoft.")
 
@@ -74,17 +80,20 @@ async def microsoft_callback(
 
     user = db.query(User).filter(User.clerk_user_id == clerk_user_id).first()
     if not user:
-        raise HTTPException(404, detail="User not found for OAuth state.")
+        return _oauth_redirect(frontend, "error", "user_not_found")
 
     try:
         tokens = await exchange_code_for_tokens(settings, code)
         store_refresh_token(settings, user, tokens, db)
         logger.info("Microsoft account connected for user %s", clerk_user_id)
+    except ValueError as exc:
+        logger.warning("Microsoft OAuth consent issue: %s", exc)
+        return _oauth_redirect(frontend, "error", "consent_required")
     except Exception as exc:
         logger.exception("Microsoft OAuth failed")
-        return RedirectResponse(f"{frontend}/new?teams=error&message=oauth_failed")
+        return _oauth_redirect(frontend, "error", "token_exchange_failed")
 
-    return RedirectResponse(f"{frontend}/new?teams=connected")
+    return _oauth_redirect(frontend, "connected", "connected")
 
 
 @router.post("/disconnect")

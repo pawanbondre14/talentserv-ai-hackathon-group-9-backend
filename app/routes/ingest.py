@@ -26,19 +26,19 @@ async def upload_transcript_file(
     auth: AuthUser = Depends(get_current_user),
 ):
     if mode not in ("meeting", "interview"):
-        raise HTTPException(400, detail="mode must be meeting or interview")
+        raise HTTPException(400, detail="Choose mode: meeting or interview.")
 
     filename = file.filename or "upload.txt"
     ext = "." + filename.rsplit(".", 1)[-1].lower() if "." in filename else ".txt"
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             400,
-            detail="Only .txt files are supported in Phase 3. Paste content or convert DOCX to text.",
+            detail="Only .txt uploads are supported. Paste text or save your file as .txt first.",
         )
 
     raw = await file.read()
     if len(raw) > MAX_BYTES:
-        raise HTTPException(400, detail="File too large (max 2MB).")
+        raise HTTPException(400, detail="File too large (max 2 MB).")
 
     try:
         text = raw.decode("utf-8")
@@ -46,12 +46,12 @@ async def upload_transcript_file(
         try:
             text = raw.decode("latin-1")
         except UnicodeDecodeError as exc:
-            raise HTTPException(400, detail="Could not read file encoding.") from exc
+            raise HTTPException(400, detail="File must be UTF-8 or Latin-1 text.") from exc
 
     normalized = normalize_transcript(text)
     wc = _word_count(normalized)
     if wc < 1:
-        raise HTTPException(400, detail="File is empty or unreadable.")
+        raise HTTPException(400, detail="File is empty or has no readable text.")
 
     user = get_or_create_db_user(db, auth)
     session_title = title or filename.rsplit(".", 1)[0] or "Uploaded session"

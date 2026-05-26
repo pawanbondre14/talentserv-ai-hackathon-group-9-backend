@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.auth import AuthUser, get_current_user
-from app.errors import get_db_user_or_503
+from app.errors import get_db_user_or_503, http_exception_from_import
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.schemas.teams import (
@@ -64,10 +64,8 @@ async def import_teams_transcript(
             mode=body.mode,
             title=body.title,
         )
-    except ValueError as exc:
-        raise HTTPException(status_code=404, detail=str(exc)) from exc
-    except RuntimeError as exc:
+    except Exception as exc:
         logger.exception("Teams import failed")
-        raise HTTPException(status_code=502, detail=str(exc)) from exc
+        raise http_exception_from_import(exc) from exc
 
     return TeamsImportResponse(session=session, word_count=wc)

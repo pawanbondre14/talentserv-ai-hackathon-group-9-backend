@@ -1,5 +1,6 @@
 import logging
 
+import httpx
 from sqlalchemy.orm import Session
 
 from app.config import Settings
@@ -29,13 +30,19 @@ async def import_transcript_to_session(
         raw_text = await service.fetch_transcript_text(user, db, item_id, source)
     except ValueError:
         raise
+    except httpx.HTTPStatusError:
+        raise
+    except httpx.RequestError as exc:
+        logger.warning("OneDrive fetch network error: %s", exc)
+        raise
     except Exception as exc:
-        raise RuntimeError(f"Could not fetch transcript: {exc}") from exc
+        logger.exception("OneDrive fetch failed")
+        raise httpx.RequestError("Could not reach OneDrive.") from exc
 
     normalized = normalize_transcript(raw_text)
     wc = word_count(normalized)
     if wc < 1:
-        raise ValueError("Transcript is empty after parsing.")
+        raise ValueError("No readable transcript text found in this file.")
 
     if source == "mock":
         source_label = "mock"
