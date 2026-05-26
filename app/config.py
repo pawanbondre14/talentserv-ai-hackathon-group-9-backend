@@ -1,9 +1,13 @@
 import os
 from functools import lru_cache
+from pathlib import Path
 from urllib.parse import quote_plus
 
 from pydantic import model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+_BACKEND_ROOT = Path(__file__).resolve().parent.parent
+_ENV_FILE = _BACKEND_ROOT / ".env"
 
 
 def normalize_database_url(raw: str) -> str:
@@ -22,7 +26,7 @@ def normalize_database_url(raw: str) -> str:
 
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(
-        env_file=".env",
+        env_file=str(_ENV_FILE) if _ENV_FILE.is_file() else None,
         env_file_encoding="utf-8",
         extra="ignore",
     )
@@ -47,9 +51,18 @@ class Settings(BaseSettings):
     llm_provider: str = "anthropic"  # anthropic | openai
     anthropic_model: str = "claude-sonnet-4-20250514"
     openai_model: str = "gpt-4o-mini"
+    openai_model_fast: str = "gpt-4o-mini"
     min_transcript_words: int = 50
     max_transcript_chars: int = 120_000
     llm_mock: bool = False
+
+    # LangGraph transcript pipeline (Phase A+); legacy single-shot when false
+    langgraph_enabled: bool = False
+    # Auto strategy uses meeting map-reduce when word_count >= this threshold
+    multi_word_threshold: int = 800
+    chunk_max_words: int = 800
+    chunk_overlap_words: int = 100
+    max_token_budget: int = 200_000
 
     # Microsoft Teams / OneDrive (Phase 4)
     azure_client_id: str = ""

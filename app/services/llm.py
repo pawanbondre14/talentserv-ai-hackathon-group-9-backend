@@ -158,19 +158,35 @@ def _should_mock(settings: Settings) -> bool:
     return not settings.anthropic_api_key
 
 
-def _call_anthropic(settings: Settings, system: str, user_prompt: str, mode: str) -> str:
+def _resolve_model(settings: Settings, model_tier: str = "strong") -> str:
+    if settings.llm_provider == "openai":
+        if model_tier == "fast":
+            return settings.openai_model_fast or settings.openai_model
+        return settings.openai_model
+    return settings.anthropic_model
+
+
+def _call_anthropic(
+    settings: Settings,
+    system: str,
+    user_prompt: str,
+    mode: str,
+    model_tier: str = "strong",
+) -> str:
     import anthropic
 
+    model = _resolve_model(settings, model_tier)
     label = _mode_label(mode)
     logger.info(
-        "[%s] Calling Anthropic model=%s (prompt_chars=%d)",
+        "[%s] Calling Anthropic model=%s tier=%s (prompt_chars=%d)",
         label,
-        settings.anthropic_model,
+        model,
+        model_tier,
         len(user_prompt),
     )
     client = anthropic.Anthropic(api_key=settings.anthropic_api_key)
     message = client.messages.create(
-        model=settings.anthropic_model,
+        model=model,
         max_tokens=8192,
         system=system,
         messages=[{"role": "user", "content": user_prompt}],
@@ -181,19 +197,27 @@ def _call_anthropic(settings: Settings, system: str, user_prompt: str, mode: str
     return raw
 
 
-def _call_openai(settings: Settings, system: str, user_prompt: str, mode: str) -> str:
+def _call_openai(
+    settings: Settings,
+    system: str,
+    user_prompt: str,
+    mode: str,
+    model_tier: str = "strong",
+) -> str:
     from openai import OpenAI
 
+    model = _resolve_model(settings, model_tier)
     label = _mode_label(mode)
     logger.info(
-        "[%s] Calling OpenAI model=%s (prompt_chars=%d)",
+        "[%s] Calling OpenAI model=%s tier=%s (prompt_chars=%d)",
         label,
-        settings.openai_model,
+        model,
+        model_tier,
         len(user_prompt),
     )
     client = OpenAI(api_key=settings.openai_api_key)
     response = client.chat.completions.create(
-        model=settings.openai_model,
+        model=model,
         messages=[
             {"role": "system", "content": system},
             {"role": "user", "content": user_prompt},
@@ -211,6 +235,7 @@ def complete_json(
     user_prompt: str,
     mode: str = "meeting",
     session_id: str | None = None,
+    model_tier: str = "strong",
 ) -> dict[str, Any]:
     label = _mode_label(mode)
     sid = session_id or "—"
@@ -260,11 +285,11 @@ def complete_json(
             if settings.llm_provider == "openai":
                 if not settings.openai_api_key:
                     raise HTTPException(500, "OPENAI_API_KEY is not configured.")
-                raw = _call_openai(settings, system, user_prompt, mode)
+                raw = _call_openai(settings, system, user_prompt, mode, model_tier)
             else:
                 if not settings.anthropic_api_key:
                     raise HTTPException(500, "ANTHROPIC_API_KEY is not configured.")
-                raw = _call_anthropic(settings, system, user_prompt, mode)
+                raw = _call_anthropic(settings, system, user_prompt, mode, model_tier)
             data = parse_json_response(raw)
             elapsed = time.perf_counter() - started
             logger.info(

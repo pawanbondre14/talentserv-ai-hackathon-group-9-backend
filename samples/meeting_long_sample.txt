@@ -1,0 +1,59 @@
+Alex Chen (Product Manager): Good morning everyone. Thanks for joining the Q2 platform review. Today we need to align on the customer portal launch, API versioning, and the incident from last Tuesday. Jordan, can you start with engineering status?
+
+Jordan Rivera (Engineering Lead): Sure. Portal backend is about seventy percent complete. Auth integration with Clerk is done. Session management and transcript upload work in staging. The blocker is the AI processing pipeline — we're wrapping it in LangGraph for longer transcripts, but Phase A is still single-shot for most requests. We expect staging sign-off by May 30 if QA doesn't find regressions.
+
+Sam Patel (Backend Engineer): On the API side, we shipped v1 session endpoints last sprint. PATCH for edited output and the chat endpoints are stable. We had one production issue Tuesday — connection pool exhaustion on Supabase when traffic spiked during the demo. We switched to the transaction pooler on port 6543 and added pool_pre_ping. No recurrence since Wednesday.
+
+Maria Gonzalez (QA Lead): From QA perspective, we've run through forty-two test cases on session CRUD, process flow, and export. Two bugs remain: autosave sometimes double-fires on slow networks, and PDF export truncates long action-item lists. Both are medium priority. We need a full regression pass after the LangGraph flag goes to production.
+
+Alex Chen: What's the customer impact of delaying portal launch one week?
+
+Jordan Rivera: If we slip to June 7, Acme Corp still gets their pilot on time — their contract says "on or before June 15." Smaller pilot customers in batch two would move to June 14. The risk is reputation if we announce a date and miss it again.
+
+Alex Chen: Decision one — we commit to June 7 for internal release and June 12 for external pilot batch one, assuming QA sign-off by May 30. Jordan owns the engineering timeline. Sam owns the pooler documentation for the runbook.
+
+Sam Patel: I'll add a deployment checklist for DATABASE_URL — direct db host versus pooler — so we don't repeat Tuesday's issue.
+
+Maria Gonzalez: Decision two — we won't block launch on the PDF truncation bug, but it must be fixed by June 5. I'll assign Priya to autosave and Carlos to export.
+
+Alex Chen: Discussion on API versioning. Customer Success asked for webhook notifications when AI processing completes. That's not in v1.
+
+Jordan Rivera: Webhooks are probably a v1.1 item — two weeks of work minimum. We'd need retry logic, signing secrets, and a delivery log table.
+
+Sam Patel: We could ship a polling endpoint first — GET session status already exists. Document recommended poll interval of five seconds for integrators.
+
+Alex Chen: Decision three — v1.1 will add webhooks in July. For June launch, we document polling in the API guide. Sam writes the integration doc. Target draft by May 28.
+
+Maria Gonzalez: Risk — we still don't have load testing numbers for concurrent process requests. Last test was ten simultaneous sessions. Production might see fifty during Acme's onboarding week.
+
+Jordan Rivera: Action item for me: schedule a load test with k6 by May 27. Target fifty concurrent process calls with LLM_MOCK enabled first, then ten with live OpenAI to estimate cost.
+
+Alex Chen: Any security concerns before pilot?
+
+Sam Patel: Clerk JWT validation must match frontend and backend Clerk apps — we had a week of 401s when issuers were mismatched. I'll add a startup log line that confirms issuer configuration. Blind mode for interview transcripts is implemented but not yet reviewed by legal.
+
+Maria Gonzalez: Legal review for blind mode is scheduled May 29. We shouldn't enable it for external pilot until that's cleared.
+
+Alex Chen: Decision four — blind mode stays internal-only until legal sign-off. Follow-up with Legal on May 29. I'll attend that meeting.
+
+Jordan Rivera: One more topic — Teams import. Mock data works. Live OneDrive import works for three of four test accounts. The failure case is tenants with conditional access policies blocking Files.Read.
+
+Alex Chen: Action item — Jordan to document the Azure app registration steps and common CA policy fixes for Customer Success. Due June 1.
+
+Sam Patel: I'll pair with Jordan on that doc.
+
+Alex Chen: Open risks for the record: backend capacity during Acme onboarding, PDF export edge case, legal clearance on blind mode, and webhook gap for enterprise customers who expect push notifications.
+
+Maria Gonzalez: Follow-up — full regression after LangGraph production enablement. Schedule for May 31.
+
+Alex Chen: Recap decisions. Launch target June 7 internal, June 12 pilot batch one. Webhooks deferred to v1.1 July. Polling documented for v1. Polling doc owner Sam, due May 28. Load test Jordan by May 27. Legal blind mode May 29. Teams troubleshooting doc Jordan and Sam by June 1.
+
+Jordan Rivera: Sounds good. I'll post notes in Slack and update Jira.
+
+Sam Patel: One last thing — should we enable LLM_MOCK in staging permanently for demos?
+
+Alex Chen: Yes for the shared staging environment. Production stays live OpenAI only. Decision five — staging uses LLM_MOCK=true by default.
+
+Maria Gonzalez: That'll help QA run process flows without burning credits.
+
+Alex Chen: Anything else? No? Thanks everyone. Meeting adjourned at 10:47.

@@ -1,0 +1,57 @@
+Interviewer (Priya Sharma, Senior Engineering Manager): Hi Jordan, thanks for making time today. This is the technical round for our Senior Backend Engineer role. We'll spend about forty-five minutes on your background, system design, coding approach, and collaboration. Sound good?
+
+Candidate (Jordan Kim): Absolutely. Thanks for having me. I've been looking forward to this — I've used similar transcript-to-insights tools in my last role and I'm excited about what your team is building.
+
+Priya Sharma: Great. Start with a recent project you're proud of — what you built, your role, and the hardest technical decision you made.
+
+Jordan Kim: Last year I led the migration of our monolith billing service to FastAPI microservices. My team was four engineers. I owned the API design, the Postgres schema split, and the cutover plan. The hardest decision was whether to dual-write to old and new databases during migration or do a big-bang cutover with a maintenance window. We chose dual-write for six weeks. It doubled write latency temporarily but let us roll back instantly when we found a tax calculation bug in week three. If we'd big-bang cut, that bug would have been a P0 outage for all customers.
+
+Priya Sharma: How did you validate correctness during dual-write?
+
+Jordan Kim: We built a reconciliation job that compared row counts and checksums every hour. Mismatch above zero point one percent triggered a Slack alert. We also sampled five hundred random invoices daily and diffed JSON representations. QA added automated contract tests against both systems for two weeks before we turned off the legacy writer.
+
+Priya Sharma: Good. Tell me about a production incident you handled. What happened and what did you change afterward?
+
+Jordan Kim: We had a connection pool exhaustion incident on Supabase. Symptoms were 503s on session creation during a customer demo. Root cause was using the direct database host instead of the transaction pooler, combined with SQLAlchemy pool size too high for serverless-adjacent deployments. I was on call. We hotfixed by switching DATABASE_URL to the pooler on port 6543, encoding special characters in the password, and adding pool_pre_ping. Post-incident we added startup validation logs and a runbook section every engineer reads during onboarding.
+
+Priya Sharma: How do you approach system design for an AI pipeline that processes long meeting transcripts?
+
+Jordan Kim: I'd start with constraints — latency SLA, cost per transcript, max transcript length. For short transcripts under six thousand tokens, a single LLM call with structured JSON output is fine. For longer content I'd chunk with overlap, map summarization or extraction per chunk in parallel, then reduce with a merge node. LangGraph fits that pattern well. You also need validation of JSON schema, retry on malformed output, and a feature flag to fall back to legacy single-shot during rollout. Observability per node — latency, token counts — is essential for debugging cost spikes.
+
+Priya Sharma: Have you used LangGraph or similar orchestration in production?
+
+Jordan Kim: We prototyped LangGraph for a document Q&A pipeline in staging. Production still uses a simpler Celery chain because we hadn't finished checkpointing and progress UI. I'm comfortable with StateGraph, fan-out with Send, and conditional edges for retry. I've read your team's multi-agent plan — Phase A wrapping single-shot in a graph before adding map-reduce is the right incremental approach.
+
+Priya Sharma: Let's go deeper on APIs. How would you design the POST process endpoint for idempotency if a client retries?
+
+Jordan Kim: I'd accept an optional Idempotency-Key header. Store a hash of session id plus key plus request body. If the same key arrives while status is processing, return 202 with the existing job reference. If processing completed, return cached result with 200. TTL on keys maybe twenty-four hours. For database persistence you could add a processing_runs table or store status on the session row with updated_at.
+
+Priya Sharma: How do you handle authentication between a React frontend and FastAPI backend?
+
+Jordan Kim: Clerk on the frontend, JWT bearer tokens on API calls. Backend validates issuer and JWKS URL against the same Clerk application as the publishable key — mismatch causes 401 even when users appear signed in. For local dev SKIP_AUTH is fine but never in production. I'd log clerk issuer at startup so misconfiguration is obvious.
+
+Priya Sharma: Coding exercise — verbally walk me through detecting duplicate action items across chunk summaries in a map-reduce meeting pipeline.
+
+Jordan Kim: Normalize each action item text — lowercase, strip punctuation, expand common abbreviations. Embed or fuzzy-match on normalized strings. Cluster items with similarity above zero point eight five. For each cluster pick the canonical version — longest string or highest confidence from the chunk model. Merge owners if one chunk says Unknown and another names someone. Output deduped list with evidence quotes from source chunks for traceability.
+
+Priya Sharma: Communication question — tell me about a time you disagreed with a product manager on scope.
+
+Jordan Kim: PM wanted webhooks for v1 launch. I pushed back with a two-week estimate and risk to stability. We compromised on polling documentation for v1 and webhooks in v1.1 with a written commitment date. I documented the API polling pattern same week so Customer Success could unblock integrators. The key was framing it as customer impact timeline, not engineering convenience.
+
+Priya Sharma: What's a skill gap you'd need to grow in this role?
+
+Jordan Kim: Multi-region Postgres and read replica lag management — most of my experience is single-region Supabase or RDS. I'd want mentorship from someone who's managed failover and cross-region consistency. I'm actively studying Supabase pooler modes and connection limits.
+
+Priya Sharma: Do you have questions for us?
+
+Jordan Kim: Yes — three. How is on-call structured for the backend team? What's the current split between single-shot and multi-agent processing in production traffic? And how does the team balance hackathon velocity with production hardening?
+
+Priya Sharma: On-call is weekly rotation, primary and secondary. Multi-agent is still rolling out — Phase A is LangGraph single-shot behind a flag. We harden via feature flags, pytest, and staged enablement per customer tier. Anything else?
+
+Jordan Kim: That covers it. I appreciate the transparency on the roadmap.
+
+Priya Sharma: Thanks Jordan. Strong examples on the billing migration and the pooler incident — clear ownership and follow-through. We'll debrief internally and you should hear from recruiting within three business days. Next step would be a system design panel with two staff engineers if we move forward.
+
+Jordan Kim: Sounds great. Thank you again.
+
+Priya Sharma: End of interview — recorded at 11:32 AM.

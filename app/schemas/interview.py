@@ -1,3 +1,5 @@
+from typing import Literal
+
 from pydantic import BaseModel, Field
 
 
@@ -15,6 +17,7 @@ class InterviewProcessOptions(BaseModel):
 
 class ProcessRequest(BaseModel):
     interview_options: InterviewProcessOptions | None = None
+    strategy: Literal["single", "multi", "auto"] = "auto"
 
 
 class ScorecardCriterion(BaseModel):
