@@ -57,8 +57,9 @@ def verify_clerk_token(token: str, settings: Settings) -> AuthUser:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail=(
-                "Invalid or expired Clerk session. Sign in again at the app (not via /docs). "
-                f"Verify CLERK_ISSUER matches your Clerk dashboard ({issuer})."
+                "Invalid or expired Clerk session. Sign in again in the app. "
+                "If this keeps happening, ensure backend CLERK_ISSUER matches the Clerk app "
+                f"used by VITE_CLERK_PUBLISHABLE_KEY (backend expects issuer: {issuer})."
             ),
         ) from exc
 

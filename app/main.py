@@ -19,9 +19,16 @@ setup_logging(settings)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Never connect to Postgres on startup — required for Vercel/Lambda (IPv6 + pooler).
-    # Create tables once via supabase/migrations/001_initial_schema.sql in Supabase SQL Editor.
-    # Optional local-only: BOOTSTRAP_SCHEMA=true python -c "from app.database import Base, engine; Base.metadata.create_all(bind=engine)"
+    s = get_settings()
+    if s.skip_auth:
+        logger.warning("SKIP_AUTH=true — authentication disabled (local dev only)")
+    elif not s.clerk_issuer or not s.clerk_jwks_url:
+        logger.error(
+            "Clerk is not configured. Set CLERK_ISSUER and CLERK_JWKS_URL in backend .env "
+            "(must match frontend VITE_CLERK_PUBLISHABLE_KEY), then restart the server."
+        )
+    else:
+        logger.info("Clerk auth configured (issuer=%s)", s.clerk_issuer.rstrip("/"))
     yield
 
 

@@ -107,6 +107,18 @@ def _maybe_jd_analysis(
     return feedback
 
 
+def apply_interview_post_hooks(
+    settings: Settings,
+    feedback: dict[str, Any],
+    transcript: str,
+    options: InterviewProcessOptions | None,
+    session_id: str | None = None,
+) -> dict[str, Any]:
+    """JD analysis and other post-graph interview steps."""
+    opts = options or InterviewProcessOptions()
+    return _maybe_jd_analysis(settings, feedback, transcript, opts, session_id)
+
+
 def save_interview_meta_for_session(
     db: Session, session: SessionRecord, options: InterviewProcessOptions | None
 ) -> None:

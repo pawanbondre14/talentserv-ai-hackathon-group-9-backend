@@ -17,8 +17,8 @@ FastAPI backend for **Turn talk into action with AI AI**: sessions, transcripts,
 If you see `401 Invalid or expired token` in Swagger or the browser URL bar, you are not sending a valid Clerk session. Fix:
 
 - Backend `.env`: `CLERK_ISSUER` and `CLERK_JWKS_URL` must match [Clerk Dashboard](https://dashboard.clerk.com) → your app → **API keys** (Issuer URL + `/.well-known/jwks.json`).
-- Frontend `.env`: `VITE_CLERK_PUBLISHABLE_KEY` from the **same** Clerk application.
-- Sign out and sign in again in the app.
+- Frontend `.env`: `VITE_CLERK_PUBLISHABLE_KEY` must be from the **same** Clerk application as the backend issuer (not a different Clerk app).
+- Sign out and sign in again in the app after changing Clerk env vars.
 
 **Without Azure** you can still use **Demo — sample meetings** (no Microsoft sign-in required).
 

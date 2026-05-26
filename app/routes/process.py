@@ -14,8 +14,9 @@ from app.services.search_index import build_search_blob
 from app.schemas.interview import ProcessRequest
 from app.schemas.output import InterviewMetaOut, OutputSchema, OutputUpdate, ProcessResponse, SessionWithOutput
 from app.schemas.session import SessionDetail
-from app.services.interview_processor import process_interview, save_interview_meta_for_session
-from app.services.llm import _should_mock, process_transcript
+from app.services.graph_runner import run_analysis
+from app.services.interview_processor import save_interview_meta_for_session
+from app.services.llm import _should_mock
 from app.services.normalize import normalize_transcript, truncate_transcript, word_count
 
 router = APIRouter()
@@ -91,26 +92,30 @@ def process_session(
     )
 
     interview_options = body.interview_options if body else None
+    strategy = body.strategy if body else "auto"
     if session.mode == "interview":
         save_interview_meta_for_session(db, session, interview_options)
 
+    pipeline = "langgraph" if settings.langgraph_enabled else "legacy"
+    logger.info(
+        "AI pipeline=%s | session_id=%s | strategy=%s",
+        pipeline,
+        session_id,
+        strategy,
+    )
+
     started = time.perf_counter()
     try:
-        if session.mode == "interview":
-            result = process_interview(
-                settings,
-                text,
-                interview_options,
-                session_id=str(session_id),
-            )
-        else:
-            result = process_transcript(
-                settings,
-                session.mode,
-                text,
-                session_id=str(session_id),
-                word_count=wc,
-            )
+        result = run_analysis(
+            settings,
+            session_id=str(session_id),
+            mode=session.mode,
+            transcript=text,
+            interview_options=interview_options,
+            strategy=strategy,
+            word_count=wc,
+            truncated=truncated,
+        )
 
         output_row = session.output
         if output_row:
