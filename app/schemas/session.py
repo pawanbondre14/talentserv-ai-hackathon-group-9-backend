@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 class SessionCreate(BaseModel):
     title: str | None = None
     mode: str = Field(default="meeting", pattern="^(meeting|interview)$")
-    source: str = Field(default="paste", pattern="^(paste|upload|teams|mock)$")
+    source: str = Field(default="paste", pattern="^(paste|upload|teams|mock|onedrive)$")
     transcript_text: str | None = None
 
 

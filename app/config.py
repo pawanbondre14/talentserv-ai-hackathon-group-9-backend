@@ -67,9 +67,9 @@ class Settings(BaseSettings):
     # Microsoft Teams / OneDrive (Phase 4)
     azure_client_id: str = ""
     azure_client_secret: str = ""
-    azure_tenant_id: str = "common"
+    azure_tenant_id: str = "consumers"  # personal OneDrive: consumers | common
     azure_redirect_uri: str = "http://localhost:8000/api/microsoft/callback"
-    azure_scopes: str = "openid profile offline_access User.Read Files.Read.All"
+    azure_scopes: str = "openid profile offline_access User.Read Files.Read"
     frontend_url: str = "http://localhost:5173"
     teams_integration_mode: str = "auto"  # auto | mock | live
     ms_token_encryption_key: str = ""

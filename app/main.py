@@ -19,6 +19,8 @@ setup_logging(settings)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
+    # Reload .env on each process start (uvicorn --reload) so Azure config changes apply.
+    get_settings.cache_clear()
     s = get_settings()
     if s.skip_auth:
         logger.warning("SKIP_AUTH=true — authentication disabled (local dev only)")
