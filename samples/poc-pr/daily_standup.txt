@@ -1,0 +1,25 @@
+Daily Standup – Product Team
+
+Ravi: Good morning everyone. Let’s begin the standup. I’ll start. Yesterday I finished the API integration for the expense summary cards and tested the transaction filters. The filter logic was mostly fine, but I noticed some issues when users selected multiple categories together. I fixed that and pushed the changes late evening. Today I’m planning to work on the recurring transactions endpoint and coordinate with Priya on validation. One blocker is I still need confirmation on whether recurring entries should support different repeat intervals like biweekly and quarterly.
+
+Priya: Thanks Ravi. From my side, I spent most of yesterday on the UI for the budget overview section. The progress bars and category cards are done and responsive on desktop and mobile. I also cleaned up some spacing issues on smaller screens. Today I’ll connect those components to Ravi’s APIs and test edge cases. One thing I noticed is that some labels become too long when category names are customized by users. I may need truncation plus tooltip support.
+
+Arjun: Yesterday I reviewed the notification flow for reminders. We now have support for budget alerts and recurring bill reminders. I also wrote unit tests for notification scheduling. Today I’ll start the AI insight cards. The idea is to show messages like “spending increased compared to last week.” I want to make sure it feels natural and helpful rather than noisy.
+
+Manager: Sounds good. About Ravi’s question, yes, we should support weekly, biweekly, monthly, quarterly, and yearly. Let’s keep the structure flexible. Priya, if truncation looks odd on mobile, let’s review together. Arjun, for AI insights keep the first version simple.
+
+Ravi: Got it.
+
+Priya: One more note. QA reported that on Safari the summary cards flicker during loading. I haven’t reproduced it yet.
+
+Manager: Please prioritize reproducing it today. If it’s a CSS animation issue we can patch it quickly.
+
+Arjun: Also, users requested quick-add shortcuts from the dashboard. Maybe we can scope that next sprint.
+
+Manager: Agreed. Add it to planning notes.
+
+Ravi: That’s all from me.
+
+Priya: Same here.
+
+Manager: Great. Thanks everyone.

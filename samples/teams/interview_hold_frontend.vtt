@@ -1,0 +1,19 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:12.000
+Interviewer: Thanks for joining. We reviewed your frontend experience and discussed React architecture.
+
+00:00:12.000 --> 00:00:38.000
+Candidate: I shared recent work on reusable components, accessibility improvements, and performance optimization.
+
+00:00:38.000 --> 00:01:20.000
+Interviewer: We also covered testing strategy, state management, and handling design system consistency.
+
+00:01:20.000 --> 00:02:15.000
+Candidate: I explained trade-offs between local state and global state and gave examples from previous projects.
+
+00:02:15.000 --> 00:03:20.000
+Interviewer: Overall the discussion was positive. We’d like to keep your profile on hold while completing interviews with remaining candidates.
+
+00:03:20.000 --> 00:04:00.000
+Interviewer: We expect to update you next week. Thank you again for your time and thoughtful answers.

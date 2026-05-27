@@ -7,6 +7,13 @@
     "transcript_file": "sprint_planning.vtt"
   },
   {
+    "id": "mock-sprint-planning-txt",
+    "title": "Sprint Planning — Expense Tracker (TXT)",
+    "date": "2026-05-20T11:00:00Z",
+    "source": "mock",
+    "transcript_file": "sprint_planning.txt"
+  },
+  {
     "id": "mock-product-review",
     "title": "Product Review — Q2",
     "date": "2026-05-18T14:30:00Z",
@@ -14,10 +21,38 @@
     "transcript_file": "product_review.vtt"
   },
   {
+    "id": "mock-daily-standup",
+    "title": "Daily Standup — Product Team",
+    "date": "2026-05-19T09:15:00Z",
+    "source": "mock",
+    "transcript_file": "daily_standup.txt"
+  },
+  {
     "id": "mock-interview-panel",
     "title": "Interview — Backend Engineer",
     "date": "2026-05-17T09:00:00Z",
     "source": "mock",
     "transcript_file": "interview_panel.vtt"
+  },
+  {
+    "id": "mock-interview-proceed-senior-fullstack",
+    "title": "Interview — Senior Full Stack (Proceed)",
+    "date": "2026-05-16T15:00:00Z",
+    "source": "mock",
+    "transcript_file": "interview_proceed_senior_fullstack.txt"
+  },
+  {
+    "id": "mock-interview-hold-frontend",
+    "title": "Interview — Frontend Engineer (Hold)",
+    "date": "2026-05-15T11:30:00Z",
+    "source": "mock",
+    "transcript_file": "interview_hold_frontend.vtt"
+  },
+  {
+    "id": "mock-interview-reject-backend",
+    "title": "Interview — Backend Engineer (Reject)",
+    "date": "2026-05-14T16:00:00Z",
+    "source": "mock",
+    "transcript_file": "interview_reject_backend.txt"
   }
 ]

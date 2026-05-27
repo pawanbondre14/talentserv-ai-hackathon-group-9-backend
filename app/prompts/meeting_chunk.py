@@ -1,41 +1,46 @@
-CHUNK_SUMMARY_SYSTEM = """You extract partial meeting notes from one transcript segment.
-Return valid JSON only — no markdown fences.
-Use evidence from the segment only. For unknown owners use "Unknown"."""
+from app.prompts._shared import (
+    MEETING_ANALYSIS_STEPS,
+    MEETING_CHUNK_JSON_SCHEMA,
+    MEETING_EVIDENCE_RULES,
+    MEETING_FINAL_JSON_SCHEMA,
+)
+
+CHUNK_SUMMARY_SYSTEM = f"""You extract partial meeting notes from one transcript segment.
+
+{MEETING_EVIDENCE_RULES}
+
+Return valid JSON only."""
 
 
 def chunk_summary_prompt(chunk_id: str, chunk_text: str) -> str:
-    return f"""Analyze this meeting transcript SEGMENT (chunk {chunk_id}) and return JSON:
+    return f"""Analyze this meeting transcript SEGMENT (chunk {chunk_id}).
 
-{{
-  "chunk_id": "{chunk_id}",
-  "discussion_points": [
-    {{"topic": "", "summary": "", "participants": []}}
-  ],
-  "decisions": [
-    {{"decision": "", "rationale": "", "owner": ""}}
-  ],
-  "action_items": [
-    {{"task": "", "owner": "", "due_date": "not specified", "priority": "Medium"}}
-  ],
-  "risks": [],
-  "follow_ups": []
-}}
+Return JSON matching this structure (set chunk_id to "{chunk_id}"):
+
+{MEETING_CHUNK_JSON_SCHEMA}
+
+{MEETING_ANALYSIS_STEPS}
 
 SEGMENT:
 {chunk_text}
 """
 
 
-MERGE_ACTIONS_SYSTEM = """You deduplicate and merge meeting decisions and action items from chunk summaries.
-Return valid JSON only. Combine near-duplicates; keep distinct items separate."""
+MERGE_ACTIONS_SYSTEM = f"""You deduplicate and merge meeting decisions and action items from chunk summaries.
+
+{MEETING_EVIDENCE_RULES}
+
+Combine near-duplicates; keep distinct items separate.
+Preserve source_quote and chunk_id when merging; combine chunk_ids for merged items.
+Return valid JSON only."""
 
 
 def merge_actions_prompt(merged_outline: str) -> str:
     return f"""From these chunk-level meeting extractions, return JSON:
 
 {{
-  "decisions": [{{"decision": "", "rationale": "", "owner": ""}}],
-  "action_items": [{{"task": "", "owner": "", "due_date": "not specified", "priority": "High|Medium|Low"}}],
+  "decisions": [{{"decision": "", "rationale": "", "owner": "", "source_quote": "", "chunk_id": ""}}],
+  "action_items": [{{"task": "", "owner": "", "due_date": "not specified", "priority": "High|Medium|Low", "source_quote": "", "chunk_id": ""}}],
   "risks": [],
   "follow_ups": []
 }}
@@ -45,33 +50,29 @@ CHUNK DATA:
 """
 
 
-SYNTHESIZE_MINUTES_SYSTEM = """You produce final structured meeting minutes from merged facts.
+SYNTHESIZE_MINUTES_SYSTEM = f"""You produce final structured meeting minutes from merged facts.
+
+{MEETING_EVIDENCE_RULES}
+
 Return valid JSON matching the required schema exactly. No markdown fences."""
 
 
 def synthesize_minutes_prompt(merged_facts: str, full_transcript_excerpt: str) -> str:
-    return f"""Create final meeting minutes JSON with exactly these keys:
+    return f"""Create final meeting minutes JSON with exactly this structure:
 
-{{
-  "executive_summary": "2-3 sentences",
-  "discussion_points": [
-    {{"topic": "", "summary": "", "participants": []}}
-  ],
-  "decisions": [
-    {{"decision": "", "rationale": "", "owner": ""}}
-  ],
-  "action_items": [
-    {{"task": "", "owner": "", "due_date": "YYYY-MM-DD or not specified", "priority": "High|Medium|Low"}}
-  ],
-  "risks": [],
-  "follow_ups": []
-}}
+{MEETING_FINAL_JSON_SCHEMA}
 
-Use MERGED FACTS as primary source; verify tone against transcript excerpt if needed.
+SYNTHESIS RULES:
+- Use MERGED FACTS as the primary source for decisions, action_items, risks, and follow_ups.
+- Use TRANSCRIPT EXCERPT only to verify tone, fill discussion_points gaps, and resolve conflicts.
+- Do not add decisions or action items absent from MERGED FACTS unless clearly supported in the excerpt.
+- If chunk summaries conflict, note the conflict briefly in the relevant item rationale.
+
+{MEETING_ANALYSIS_STEPS}
 
 MERGED FACTS:
 {merged_facts}
 
-TRANSCRIPT EXCERPT (first ~3000 chars):
+TRANSCRIPT EXCERPT (verification):
 {full_transcript_excerpt}
 """

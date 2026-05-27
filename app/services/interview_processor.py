@@ -9,6 +9,7 @@ from app.prompts.interview_feedback import INTERVIEW_FEEDBACK_SYSTEM, interview_
 from app.prompts.interview_jd import JD_ANALYSIS_SYSTEM, jd_analysis_prompt
 from app.prompts.interview_panel import PANEL_MERGE_SYSTEM, panel_merge_prompt
 from app.schemas.interview import InterviewProcessOptions
+from app.services.interview_fairness import apply_fairness_check
 from app.services.interview_redact import redact_pii
 from app.services.llm import complete_json
 from app.services.scorecards import get_scorecard, scorecard_prompt_block
@@ -65,6 +66,8 @@ def process_interview(
             mode="interview",
             session_id=session_id,
         )
+        merged = apply_fairness_check(settings, merged, session_id=session_id)
+        merged.pop("_fairness_checked", None)
         return _maybe_jd_analysis(settings, merged, "\n\n".join(all_parts), opts, session_id)
 
     text = transcript.strip()
@@ -79,6 +82,8 @@ def process_interview(
         mode="interview",
         session_id=session_id,
     )
+    result = apply_fairness_check(settings, result, session_id=session_id)
+    result.pop("_fairness_checked", None)
 
     return _maybe_jd_analysis(settings, result, text, opts, session_id)
 
@@ -114,8 +119,11 @@ def apply_interview_post_hooks(
     options: InterviewProcessOptions | None,
     session_id: str | None = None,
 ) -> dict[str, Any]:
-    """JD analysis and other post-graph interview steps."""
+    """Fairness check (if not already done), JD analysis, and other post-graph steps."""
     opts = options or InterviewProcessOptions()
+    if not feedback.get("_fairness_checked"):
+        feedback = apply_fairness_check(settings, feedback, session_id=session_id)
+    feedback.pop("_fairness_checked", None)
     return _maybe_jd_analysis(settings, feedback, transcript, opts, session_id)
 
 

@@ -1,4 +1,18 @@
-CLASSIFY_CHUNK_SYSTEM = """You classify interview transcript segments for downstream specialist reviewers.
+from app.prompts._shared import (
+    INTERVIEW_ANALYSIS_STEPS,
+    INTERVIEW_EVIDENCE_RULES,
+    INTERVIEW_FINAL_JSON_SCHEMA,
+    INTERVIEW_RATING_RUBRIC,
+    INTERVIEW_SYNTHESIS_RATING_GUIDE,
+    INTERVIEW_TRANSCRIPT_FORMAT_NOTE,
+    SCORE_FIELD_INSTRUCTION,
+    SCORE_SCALE_RUBRIC,
+)
+
+CLASSIFY_CHUNK_SYSTEM = f"""You classify interview transcript segments for downstream specialist reviewers.
+
+{INTERVIEW_EVIDENCE_RULES}
+
 Return valid JSON only."""
 
 
@@ -8,10 +22,15 @@ def classify_chunk_prompt(chunk_id: str, chunk_text: str) -> str:
 Return JSON:
 {{
   "chunk_id": "{chunk_id}",
+  "speakers": ["names or Interviewer/Candidate if unclear"],
+  "topics": ["main topics discussed"],
+  "questions_asked": ["interviewer questions in this segment"],
+  "candidate_claims": ["factual claims the candidate made"],
   "segment_types": ["technical", "behavioral", "culture"],
   "has_technical_content": true,
   "has_communication_signals": true,
   "has_culture_fit_signals": true,
+  "key_quotes": [{{"speaker": "", "quote": ""}}],
   "summary": "one sentence"
 }}
 
@@ -20,43 +39,67 @@ SEGMENT:
 """
 
 
-REVIEW_TECHNICAL_SYSTEM = """You evaluate technical skills and problem-solving from interview evidence only.
+REVIEW_TECHNICAL_SYSTEM = f"""You evaluate technical skills and problem-solving from interview evidence only.
+
+{INTERVIEW_EVIDENCE_RULES}
+
+{INTERVIEW_TRANSCRIPT_FORMAT_NOTE}
+
+{SCORE_SCALE_RUBRIC}
+
+{SCORE_FIELD_INSTRUCTION}
+
+Focus on technical depth, correctness, tradeoffs, and ownership. Do not score communication style here.
 Return valid JSON only."""
 
 
 def review_technical_prompt(transcript_excerpt: str, classifications: str) -> str:
-    return f"""Review technical depth. Return JSON:
+    return f"""Review technical depth for this interview. Return JSON:
 {{
   "dimension": "technical",
-  "technical_skills": ["skill1"],
-  "problem_solving": "assessment",
-  "gaps": ["gap1"],
-  "score": 1,
+  "technical_skills": ["skills demonstrated with evidence"],
+  "problem_solving": "assessment with evidence",
+  "gaps": ["gaps with evidence or Not assessed"],
+  "score": 4,
+  "confidence": "high|medium|low",
   "evidence_quotes": ["exact quote from transcript"],
-  "summary": "brief"
+  "not_assessed": ["topics not covered in excerpt"],
+  "summary": "brief evidence-based summary"
 }}
 
-CLASSIFICATIONS:
+CLASSIFICATIONS (chunk summaries — use to locate relevant segments):
 {classifications}
 
-TRANSCRIPT EXCERPT:
+TRANSCRIPT EXCERPT (relevant segments only):
 {transcript_excerpt}
 """
 
 
-REVIEW_COMMUNICATION_SYSTEM = """You evaluate communication quality from interview evidence only.
+REVIEW_COMMUNICATION_SYSTEM = f"""You evaluate communication quality from interview evidence only.
+
+{INTERVIEW_EVIDENCE_RULES}
+
+{INTERVIEW_TRANSCRIPT_FORMAT_NOTE}
+
+{SCORE_SCALE_RUBRIC}
+
+{SCORE_FIELD_INSTRUCTION}
+
+Focus on clarity, structure, listening, and professionalism. Do not score technical depth here.
 Return valid JSON only."""
 
 
 def review_communication_prompt(transcript_excerpt: str, classifications: str) -> str:
-    return f"""Review communication. Return JSON:
+    return f"""Review communication for this interview. Return JSON:
 {{
   "dimension": "communication",
   "clarity": "assessment",
   "structure": "assessment",
   "red_flags": [],
-  "score": 1,
+  "score": 4,
+  "confidence": "high|medium|low",
   "evidence_quotes": ["exact quote"],
+  "not_assessed": [],
   "summary": "brief"
 }}
 
@@ -68,19 +111,31 @@ TRANSCRIPT EXCERPT:
 """
 
 
-REVIEW_CULTURE_SYSTEM = """You evaluate culture fit and motivation signals from interview evidence only.
+REVIEW_CULTURE_SYSTEM = f"""You evaluate culture fit and motivation signals from interview evidence only.
+
+{INTERVIEW_EVIDENCE_RULES}
+
+{INTERVIEW_TRANSCRIPT_FORMAT_NOTE}
+
+{SCORE_SCALE_RUBRIC}
+
+{SCORE_FIELD_INSTRUCTION}
+
+Focus on collaboration, values alignment, enthusiasm, and teamwork examples. Do not score technical skills here.
 Return valid JSON only."""
 
 
 def review_culture_prompt(transcript_excerpt: str, classifications: str) -> str:
-    return f"""Review culture fit. Return JSON:
+    return f"""Review culture fit for this interview. Return JSON:
 {{
   "dimension": "culture",
   "enthusiasm": "assessment",
-  "collaboration_signals": ["signal"],
+  "collaboration_signals": ["signal with evidence"],
   "concerns": [],
-  "score": 1,
+  "score": 4,
+  "confidence": "high|medium|low",
   "evidence_quotes": ["exact quote"],
+  "not_assessed": [],
   "summary": "brief"
 }}
 
@@ -92,54 +147,75 @@ TRANSCRIPT EXCERPT:
 """
 
 
-SYNTHESIZE_HIRING_SYSTEM = """You synthesize specialist interview reviews into hiring feedback for recruiters.
-Return valid JSON only. rating must be exactly one of: Proceed, Hold, Reject.
-For skill areas not covered, use "Not assessed"."""
+SYNTHESIZE_HIRING_SYSTEM = f"""You synthesize specialist interview reviews into hiring feedback for recruiters.
+
+{INTERVIEW_TRANSCRIPT_FORMAT_NOTE}
+
+{INTERVIEW_EVIDENCE_RULES}
+
+{INTERVIEW_RATING_RUBRIC}
+
+Return valid JSON only."""
 
 
-def synthesize_hiring_prompt(reviews_json: str, transcript_excerpt: str, extra_instructions: str = "") -> str:
+def synthesize_hiring_prompt(
+    reviews_json: str,
+    transcript_excerpt: str,
+    extra_instructions: str = "",
+    evidence_json: str = "",
+) -> str:
     extra = f"\n\n{extra_instructions}" if extra_instructions else ""
-    return f"""Synthesize final interview feedback JSON with exactly these keys:
+    evidence_block = (
+        f"\n\nEXTRACTED EVIDENCE (deterministic):\n{evidence_json}"
+        if evidence_json
+        else ""
+    )
+    return f"""Synthesize final interview feedback JSON with exactly this structure:
 
-{{
-  "candidate_summary": "2-3 sentences",
-  "skill_observations": {{
-    "technical_skills": "",
-    "communication": "",
-    "problem_solving": "",
-    "culture_fit": ""
-  }},
-  "strengths": [],
-  "concerns": [],
-  "communication_assessment": "",
-  "rating": "Proceed|Hold|Reject",
-  "rationale": "",
-  "follow_up_questions": [],
-  "qa_pairs": [{{"question": "", "answer": "", "notes": ""}}],
-  "scorecard_scores": []
-}}
+{INTERVIEW_FINAL_JSON_SCHEMA}
 
-Use specialist reviews as primary evidence. Include qa_pairs when clear in transcript.
+SYNTHESIS RULES:
+- Treat SPECIALIST REVIEWS (1-5 scores) as primary evidence for rating, strengths, and concerns.
+- Use TRANSCRIPT EXCERPT only to verify quotes, fill qa_pairs, and resolve conflicts.
+- Balance strengths and concerns — do not overweight EXTRACTED EVIDENCE concerns if specialist scores are mostly 3-5.
+- If specialist scores conflict, use Hold; do not default to Reject.
+- Every strength/concern must trace to specialist evidence_quotes or EXTRACTED EVIDENCE.
+- Do not introduce claims absent from reviews or excerpt.
+
+{INTERVIEW_SYNTHESIS_RATING_GUIDE}
+
+{INTERVIEW_ANALYSIS_STEPS}
 {extra}
 SPECIALIST REVIEWS:
 {reviews_json}
+{evidence_block}
 
-TRANSCRIPT EXCERPT:
+TRANSCRIPT EXCERPT (verification):
 {transcript_excerpt}
 """
 
 
-FAIRNESS_CHECK_SYSTEM = """You check hiring feedback for unsupported claims or protected-class inferences.
+FAIRNESS_CHECK_SYSTEM = f"""You check hiring feedback for unsupported claims or protected-class inferences.
+
+{INTERVIEW_EVIDENCE_RULES}
+
 Return valid JSON only."""
 
 
 def fairness_check_prompt(feedback_json: str) -> str:
-    return f"""Review this hiring feedback. Return JSON:
+    return f"""Review this hiring feedback for unsupported claims or protected-class inferences.
+
+Return JSON:
 {{
   "flags": ["list unsupported or risky claims, empty if none"],
-  "adjusted_rating": "Proceed|Hold|Reject or same as input",
+  "adjusted_rating": "Proceed|Hold|Reject — MUST match input rating when flags is empty",
   "notes": ""
 }}
+
+RULES:
+- If flags is empty, set adjusted_rating to the SAME value as the input rating field.
+- Only change adjusted_rating when flags is non-empty and a correction is required.
+- Do not downgrade Proceed to Reject unless flags cite serious unsupported claims or bias.
 
 FEEDBACK:
 {feedback_json}

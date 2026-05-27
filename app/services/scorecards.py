@@ -4,6 +4,13 @@ from typing import Any
 
 SCORECARDS_DIR = Path(__file__).resolve().parents[1] / "templates" / "scorecards"
 
+SCORE_ANCHORS = """Score each criterion 1-5:
+1 = no evidence or clearly below bar
+2 = superficial or incorrect examples
+3 = adequate with notable gaps
+4 = strong with concrete, relevant examples
+5 = exceptional depth, tradeoffs, and ownership"""
+
 
 def list_scorecards() -> list[dict[str, Any]]:
     items: list[dict[str, Any]] = []
@@ -27,12 +34,17 @@ def get_scorecard(scorecard_id: str) -> dict[str, Any] | None:
 
 
 def scorecard_prompt_block(scorecard: dict[str, Any]) -> str:
-    lines = [f"Use this role scorecard ({scorecard['title']}):"]
+    lines = [
+        f"Use this role scorecard ({scorecard['title']}):",
+        SCORE_ANCHORS,
+    ]
     for c in scorecard.get("criteria", []):
-        lines.append(f"- {c['label']} (id: {c['id']})")
+        weight = c.get("weight")
+        weight_note = f" (weight {weight})" if weight is not None else ""
+        lines.append(f"- {c['label']} (id: {c['id']}){weight_note}")
     lines.append(
         "Include scorecard_scores: array of "
-        '{"criterion": "label", "criterion_id": "id", "score": 1-5, "notes": "evidence"} '
-        "for each criterion above."
+        '{"criterion": "label", "criterion_id": "id", "score": 1-5, "notes": "evidence with quote"} '
+        "for each criterion above. Use notes to cite transcript evidence."
     )
     return "\n".join(lines)

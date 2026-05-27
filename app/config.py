@@ -44,7 +44,7 @@ class Settings(BaseSettings):
     clerk_issuer: str = ""
     clerk_jwks_url: str = ""
     skip_auth: bool = False
-    dev_user_id: str = "dev_user_local"
+    dev_user_id: str = ""
 
     anthropic_api_key: str = ""
     openai_api_key: str = ""

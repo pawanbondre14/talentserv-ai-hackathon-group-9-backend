@@ -271,14 +271,26 @@ class TeamsService:
             return self._fetch_mock_transcript(meeting_id)
         return await self._fetch_onedrive_item(user, db, meeting_id)
 
+    def _resolve_mock_transcript_path(self, transcript_file: str) -> Path:
+        """Prevent path traversal — only allow files under samples/teams/."""
+        name = Path(transcript_file).name
+        if name != transcript_file or ".." in transcript_file.replace("\\", "/"):
+            raise ValueError(f"Invalid transcript_file in mock catalog: {transcript_file!r}")
+        resolved = (SAMPLES_DIR / name).resolve()
+        if not str(resolved).startswith(str(SAMPLES_DIR.resolve())):
+            raise ValueError(f"Transcript path escapes samples directory: {transcript_file!r}")
+        if not resolved.is_file():
+            raise ValueError(f"Mock transcript file not found: {name}")
+        return resolved
+
     def _fetch_mock_transcript(self, meeting_id: str) -> str:
         path = SAMPLES_DIR / "mock_meetings.json"
         meetings = json.loads(path.read_text(encoding="utf-8"))
         match = next((m for m in meetings if m["id"] == meeting_id), None)
         if not match:
             raise ValueError(f"Mock meeting not found: {meeting_id}")
-        vtt_path = SAMPLES_DIR / match["transcript_file"]
-        return vtt_to_plain_text(vtt_path.read_text(encoding="utf-8"))
+        file_path = self._resolve_mock_transcript_path(match["transcript_file"])
+        return vtt_to_plain_text(file_path.read_text(encoding="utf-8"))
 
     async def _fetch_onedrive_item(self, user, db, item_id: str) -> str:
         token = await self._get_access_token(user, db)

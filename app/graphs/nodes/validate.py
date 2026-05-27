@@ -28,6 +28,14 @@ _INTERVIEW_REQUIRED = (
 _VALID_RATINGS = frozenset({"Proceed", "Hold", "Reject"})
 
 
+def _has_quote_field(item: dict) -> bool:
+    for key in ("source_quote", "quote", "evidence_quote"):
+        val = item.get(key)
+        if val and str(val).strip():
+            return True
+    return False
+
+
 def _validate_meeting(data: dict) -> list[str]:
     errors: list[str] = []
     for key in _MEETING_REQUIRED:
@@ -36,6 +44,15 @@ def _validate_meeting(data: dict) -> list[str]:
     summary = data.get("executive_summary")
     if summary is not None and not str(summary).strip():
         errors.append("executive_summary is empty")
+
+    for i, dec in enumerate(data.get("decisions") or []):
+        if isinstance(dec, dict) and not _has_quote_field(dec):
+            errors.append(f"decisions[{i}] missing source_quote (evidence)")
+
+    for i, act in enumerate(data.get("action_items") or []):
+        if isinstance(act, dict) and not _has_quote_field(act):
+            errors.append(f"action_items[{i}] missing source_quote (evidence)")
+
     return errors
 
 
@@ -50,6 +67,16 @@ def _validate_interview(data: dict) -> list[str]:
     skills = data.get("skill_observations")
     if skills is not None and not isinstance(skills, dict):
         errors.append("skill_observations must be an object")
+
+    evidence = data.get("evidence_items")
+    strengths = data.get("strengths") or []
+    concerns = data.get("concerns") or []
+    if strengths or concerns:
+        if not evidence and not (data.get("qa_pairs") or []):
+            errors.append(
+                "strengths/concerns present but no evidence_items or qa_pairs for grounding"
+            )
+
     return errors
 
 

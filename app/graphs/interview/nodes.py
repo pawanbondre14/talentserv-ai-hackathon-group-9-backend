@@ -12,18 +12,18 @@ from app.graphs.context import get_graph_settings
 from app.graphs.state import TranscriptState
 from app.prompts.interview_chunk import (
     CLASSIFY_CHUNK_SYSTEM,
-    FAIRNESS_CHECK_SYSTEM,
     REVIEW_COMMUNICATION_SYSTEM,
     REVIEW_CULTURE_SYSTEM,
     REVIEW_TECHNICAL_SYSTEM,
     SYNTHESIZE_HIRING_SYSTEM,
     classify_chunk_prompt,
-    fairness_check_prompt,
     review_communication_prompt,
     review_culture_prompt,
     review_technical_prompt,
     synthesize_hiring_prompt,
 )
+from app.services.interview_context import build_dimension_excerpt
+from app.services.interview_fairness import apply_fairness_check
 from app.services.llm import _mock_interview, _should_mock, complete_json
 from app.services.scorecards import get_scorecard, scorecard_prompt_block
 
@@ -38,6 +38,53 @@ def _reviews_text(state: TranscriptState) -> str:
         p for p in (state.get("partial_reviews") or []) if p.get("type") == "dimension_review"
     ]
     return json.dumps(reviews, indent=2)[:120_000]
+
+
+def _interviewer_closing_signals(text: str) -> list[str]:
+    lower = text.lower()
+    signals: list[str] = []
+    if "will not proceed" in lower or "not proceed further" in lower or "do not proceed" in lower:
+        return signals
+    if "proceed to the next round" in lower or "like to proceed to" in lower:
+        signals.append("Interviewer explicitly indicated proceeding to the next round.")
+    if "strong ownership" in lower or "strong technical" in lower or "good communication" in lower:
+        signals.append("Interviewer gave positive closing feedback on skills or ownership.")
+    return signals
+
+
+def _rating_hint_from_reviews(reviews: list[dict[str, Any]], transcript: str = "") -> str:
+    scores = [
+        float(r["score"])
+        for r in reviews
+        if isinstance(r.get("score"), (int, float))
+    ]
+    if not scores:
+        return ""
+    avg = sum(scores) / len(scores)
+    closing = _interviewer_closing_signals(transcript)
+
+    if avg >= 3.5:
+        band = "Proceed"
+    elif avg >= 2.5:
+        band = "Hold"
+    else:
+        band = "Reject"
+
+    # Guard: all 1s with positive interviewer close → specialists likely mis-scored (template bias).
+    if avg <= 1.5 and closing:
+        band = "Proceed"
+        miscal = (
+            " Specialist scores look inconsistent with interviewer closing signals — "
+            "prioritize closing transcript evidence over dimension scores of 1."
+        )
+    else:
+        miscal = ""
+
+    closing_line = " ".join(closing) if closing else ""
+    return (
+        f"Specialist score average (1-5): {avg:.1f} across {len(scores)} dimensions. "
+        f"Suggested rating band: {band}.{miscal} {closing_line}".strip()
+    )
 
 
 def _scorecard_extra(state: TranscriptState) -> str:
@@ -122,13 +169,29 @@ def aggregate_classifications_node(state: TranscriptState) -> dict[str, Any]:
     }
 
 
+def _review_worker_payload(state: TranscriptState) -> dict[str, Any]:
+    """LangGraph Send() replaces state — must pass full context to specialist workers."""
+    return {
+        "session_id": state.get("session_id") or "",
+        "clean_text": state.get("clean_text") or "",
+        "chunks": state.get("chunks") or [],
+        "merged_facts": state.get("merged_facts") or {},
+        "meta": state.get("meta") or {},
+    }
+
+
 def map_review_dimensions(state: TranscriptState) -> list[Send]:
-    session_id = state.get("session_id") or ""
+    payload = _review_worker_payload(state)
     return [
-        Send("review_technical", {"session_id": session_id}),
-        Send("review_communication", {"session_id": session_id}),
-        Send("review_culture", {"session_id": session_id}),
+        Send("review_technical", payload),
+        Send("review_communication", payload),
+        Send("review_culture", payload),
     ]
+
+
+def _classifications_list(state: TranscriptState) -> list[dict[str, Any]]:
+    merged = state.get("merged_facts") or {}
+    return [p for p in (merged.get("classifications") or []) if isinstance(p, dict)]
 
 
 def _review_dimension(
@@ -138,8 +201,17 @@ def _review_dimension(
     prompt_fn,
 ) -> dict[str, Any]:
     settings = get_graph_settings()
-    excerpt = (state.get("clean_text") or "")[:12_000]
-    classifications = _classifications_text(state)
+    full_text = state.get("clean_text") or ""
+    classifications = _classifications_list(state)
+    wc = (state.get("meta") or {}).get("word_count")
+    excerpt = build_dimension_excerpt(
+        classifications,
+        state.get("chunks") or [],
+        dimension,
+        fallback_text=full_text,
+        word_count=wc,
+    )
+    classifications_json = json.dumps(classifications, indent=2)[:80_000]
     session_id = state.get("session_id")
 
     t0 = time.perf_counter()
@@ -147,7 +219,7 @@ def _review_dimension(
         data: dict[str, Any] = {
             "type": "dimension_review",
             "dimension": dimension,
-            "score": 7,
+            "score": 4,
             "summary": f"Mock {dimension} review",
             "evidence_quotes": ["Candidate gave a structured answer with examples."],
         }
@@ -165,7 +237,7 @@ def _review_dimension(
         data = complete_json(
             settings,
             system,
-            prompt_fn(excerpt, classifications),
+            prompt_fn(excerpt, classifications_json),
             mode="interview",
             session_id=session_id,
             model_tier="fast",
@@ -217,9 +289,10 @@ def extract_evidence_node(state: TranscriptState) -> dict[str, Any]:
         summary = rev.get("summary") or ""
         dim = rev.get("dimension", "unknown")
         score = rev.get("score", 0)
-        if isinstance(score, (int, float)) and score >= 6:
+        # Specialist reviewers use 1-5 scale (see SCORE_SCALE_RUBRIC in prompts).
+        if isinstance(score, (int, float)) and score >= 4:
             strengths.append(f"{dim}: {summary}".strip())
-        elif isinstance(score, (int, float)) and score <= 4:
+        elif isinstance(score, (int, float)) and score <= 2:
             concerns.append(f"{dim}: {summary}".strip())
         for g in rev.get("gaps") or []:
             concerns.append(f"technical gap: {g}")
@@ -249,7 +322,12 @@ def extract_evidence_node(state: TranscriptState) -> dict[str, Any]:
 def synthesize_hiring_node(state: TranscriptState) -> dict[str, Any]:
     settings = get_graph_settings()
     session_id = state.get("session_id")
-    excerpt = (state.get("clean_text") or "")[:8000]
+    full_text = state.get("clean_text") or ""
+    # Head + tail so synthesis sees opening and closing interviewer lines on long transcripts.
+    if len(full_text) > 10_000:
+        excerpt = full_text[:6000] + "\n\n...[middle omitted]...\n\n" + full_text[-4000:]
+    else:
+        excerpt = full_text
     reviews_json = _reviews_text(state)
     extra = _scorecard_extra(state)
 
@@ -260,10 +338,23 @@ def synthesize_hiring_node(state: TranscriptState) -> dict[str, Any]:
             "Multi-agent interview synthesis across specialist reviewers (mock)."
         )
     else:
+        evidence = (state.get("merged_facts") or {}).get("evidence") or {}
+        reviews = evidence.get("reviews") or [
+            p
+            for p in (state.get("partial_reviews") or [])
+            if p.get("type") == "dimension_review"
+        ]
+        rating_hint = _rating_hint_from_reviews(reviews, full_text)
+        hint_block = f"\n\n{rating_hint}" if rating_hint else ""
         output = complete_json(
             settings,
             SYNTHESIZE_HIRING_SYSTEM,
-            synthesize_hiring_prompt(reviews_json, excerpt, extra),
+            synthesize_hiring_prompt(
+                reviews_json,
+                excerpt,
+                extra + hint_block,
+                evidence_json=json.dumps(evidence, indent=2)[:40_000],
+            ),
             mode="interview",
             session_id=session_id,
             model_tier="strong",
@@ -288,24 +379,9 @@ def fairness_check_node(state: TranscriptState) -> dict[str, Any]:
     session_id = state.get("session_id")
 
     t0 = time.perf_counter()
-    if _should_mock(settings):
-        flags: list[str] = []
-    else:
-        check = complete_json(
-            settings,
-            FAIRNESS_CHECK_SYSTEM,
-            fairness_check_prompt(json.dumps(output, indent=2)[:60_000]),
-            mode="interview",
-            session_id=session_id,
-            model_tier="fast",
-        )
-        flags = check.get("flags") or []
-        adjusted = check.get("adjusted_rating")
-        if adjusted in ("Proceed", "Hold", "Reject"):
-            output["rating"] = adjusted
-        if flags:
-            notes = check.get("notes") or ""
-            output["rationale"] = (output.get("rationale") or "") + f" Fairness notes: {notes}"
+    output = apply_fairness_check(settings, output, session_id=session_id)
+    output.pop("_fairness_checked", None)
+    flags = output.get("fairness_flags") or []
 
     elapsed_ms = int((time.perf_counter() - t0) * 1000)
     return {

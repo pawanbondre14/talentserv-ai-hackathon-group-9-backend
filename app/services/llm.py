@@ -91,6 +91,7 @@ def _mock_meeting() -> dict[str, Any]:
                 "decision": "Ship MVP by June 15",
                 "rationale": "Customer commitments require early delivery.",
                 "owner": "Alex",
+                "source_quote": "We agreed to ship the MVP by June 15.",
             }
         ],
         "action_items": [
@@ -99,8 +100,10 @@ def _mock_meeting() -> dict[str, Any]:
                 "owner": "Jordan",
                 "due_date": "not specified",
                 "priority": "High",
+                "source_quote": "Jordan will finalize the API spec.",
             }
         ],
+        "confidence": "high",
         "risks": ["Capacity constraints on backend team"],
         "follow_ups": ["Review hiring plan next week"],
     }
@@ -142,6 +145,16 @@ def _mock_interview() -> dict[str, Any]:
                 "notes": "",
             },
         ],
+        "evidence_items": [
+            {
+                "quote": "I usually start with structured logging in staging.",
+                "competency": "problem_solving",
+                "signal": "positive",
+                "chunk_id": "",
+            }
+        ],
+        "missing_topics": ["culture_fit"],
+        "confidence": "high",
         "scorecard_scores": [
             {"criterion": "Coding & debugging", "criterion_id": "coding", "score": 4, "notes": "Clear examples"},
             {"criterion": "System design", "criterion_id": "system_design", "score": 3, "notes": "Limited scale"},

@@ -1,0 +1,29 @@
+Sprint Planning – Expense Tracker Platform
+
+Project Lead: Thanks everyone for joining. Today’s goal is to finalize scope for the next sprint. We have budget dashboard enhancements, AI categorization improvements, and receipt scanning. Before assigning work let’s review what was completed.
+
+Engineering Lead: Last sprint delivered recurring transactions, notification scheduling, and transaction export. Adoption is good internally. A few bugs remain around category edits.
+
+Designer: On the UX side, dashboard redesign is complete. We simplified navigation and users can now access budgets, reports, and goals with fewer clicks. Feedback from testing was positive.
+
+Project Lead: Great. Priority one this sprint is receipt scanning. We want users to upload a receipt and automatically extract merchant, amount, and date. Accuracy doesn’t need to be perfect initially, but the experience should feel fast.
+
+Backend Engineer: I can take OCR integration and parsing. We should also define fallback if extraction fails.
+
+Frontend Engineer: I’ll build upload and review UI so users can confirm extracted values.
+
+AI Engineer: I’ll improve expense categorization. We have enough sample data now to suggest categories with better confidence.
+
+QA: Please include testing for edge cases like handwritten receipts and poor image quality.
+
+Project Lead: Good point. Next priority is AI insights. Messages should be personalized and contextual. Example: “You spent less on transport this week” or “Dining budget is nearly reached.”
+
+Designer: We should make insight cards dismissible.
+
+Project Lead: Agreed. Final priority is analytics export. Not urgent but useful.
+
+Backend Engineer: That fits.
+
+QA: Any release target?
+
+Project Lead: End of next Friday. Mid-sprint demo on Wednesday. Let’s document tasks and move.

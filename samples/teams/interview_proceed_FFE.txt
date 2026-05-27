@@ -1,0 +1,55 @@
+Interviewer: Hi, thanks for joining today. Can you introduce yourself?
+
+Candidate: Hi, myself Rohan. I completed my degree last year and I have worked on some frontend projects using React and JavaScript mostly.
+
+Interviewer: Great. Can you explain the difference between `let`, `var`, and `const` in JavaScript?
+
+Candidate: Umm... all are used for declaring variables. Mostly I use `let` because it works better. `const` is for constants I think, and `var` is old JavaScript.
+
+Interviewer: Okay. What happens when a React component re-renders?
+
+Candidate: Re-render means the page refreshes again. React reloads the component completely whenever state changes.
+
+Interviewer: Can you explain React hooks? Especially `useEffect`.
+
+Candidate: Yes, hooks are functions in React. `useEffect` is mainly used for APIs and sometimes styling. I usually copy the dependency array from older projects.
+
+Interviewer: Suppose you have an API call inside `useEffect` without a dependency array. What will happen?
+
+Candidate: It will call once only after component loads.
+
+Interviewer: Have you worked with state management libraries like Redux?
+
+Candidate: I have seen Redux tutorials but mostly I use props because Redux is a bit confusing.
+
+Interviewer: How do you optimize frontend performance?
+
+Candidate: I usually reduce console logs and unnecessary files. Also I use fast internet during testing.
+
+Interviewer: Can you explain lazy loading?
+
+Candidate: Lazy loading means loading website slowly step by step... I have not implemented it practically yet.
+
+Interviewer: How comfortable are you with CSS and responsive design?
+
+Candidate: I mostly use Bootstrap because writing CSS from scratch takes more time. Sometimes responsiveness breaks on mobile but I adjust margins and padding.
+
+Interviewer: Have you worked with TypeScript?
+
+Candidate: Very little. Mostly I remove errors using `any`.
+
+Interviewer: How do you handle API errors in frontend applications?
+
+Candidate: Usually I use try-catch and print the error in console.
+
+Interviewer: If a user reports that the page becomes slow after opening it for some time, how would you debug it?
+
+Candidate: Maybe browser issue or system RAM issue. I would restart the app first and check.
+
+Interviewer: Do you have experience deploying frontend applications?
+
+Candidate: Yes, I deployed projects on Vercel by connecting GitHub. Sometimes build fails because of dependencies but after retry it works.
+
+Interviewer: Alright. Do you have any questions for us?
+
+Candidate: What technologies does your company use mainly?

@@ -36,6 +36,7 @@ def _mock_chunk_summary(chunk_id: str) -> dict[str, Any]:
                 "decision": f"Proceed with milestone ({chunk_id})",
                 "rationale": "Customer commitments require delivery.",
                 "owner": "Alex",
+                "source_quote": f"We will proceed with the milestone discussed in {chunk_id}.",
             }
         ],
         "action_items": [
@@ -44,6 +45,7 @@ def _mock_chunk_summary(chunk_id: str) -> dict[str, Any]:
                 "owner": "Jordan",
                 "due_date": "not specified",
                 "priority": "High",
+                "source_quote": f"Jordan owns the API checklist for {chunk_id}.",
             }
         ],
         "risks": [f"Capacity risk noted in {chunk_id}"],
