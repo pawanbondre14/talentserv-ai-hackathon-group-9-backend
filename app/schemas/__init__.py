@@ -3,6 +3,7 @@ from app.schemas.session import (
     SessionDetail,
     SessionListItem,
     SessionListResponse,
+    SessionStatsResponse,
     SessionUpdate,
 )
 
@@ -14,4 +15,5 @@ __all__ = [
     "SessionListItem",
     "SessionDetail",
     "SessionListResponse",
+    "SessionStatsResponse",
 ]

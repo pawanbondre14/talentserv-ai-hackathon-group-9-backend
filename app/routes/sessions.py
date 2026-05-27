@@ -1,13 +1,20 @@
 import uuid
 
 from fastapi import APIRouter, Depends, HTTPException, Query, status
-from sqlalchemy import Text, cast, or_
+from sqlalchemy import Text, cast, func, or_
 from sqlalchemy.orm import Session, joinedload
 
 from app.auth import AuthUser, get_current_user, get_or_create_db_user
 from app.database import get_db
 from app.models import Output, SessionRecord
-from app.schemas import SessionCreate, SessionDetail, SessionListItem, SessionListResponse, SessionUpdate
+from app.schemas import (
+    SessionCreate,
+    SessionDetail,
+    SessionListItem,
+    SessionListResponse,
+    SessionStatsResponse,
+    SessionUpdate,
+)
 from app.services.search_index import build_search_blob, extract_snippet
 
 router = APIRouter()
@@ -94,6 +101,61 @@ def list_sessions(
         )
 
     return SessionListResponse(items=items, total=total, query=q)
+
+
+@router.get("/stats", response_model=SessionStatsResponse)
+def session_stats(
+    db: Session = Depends(get_db),
+    auth: AuthUser = Depends(get_current_user),
+):
+    user = get_or_create_db_user(db, auth)
+    base_filter = SessionRecord.user_id == user.id
+
+    total = db.query(func.count(SessionRecord.id)).filter(base_filter).scalar() or 0
+
+    status_counts = dict(
+        db.query(SessionRecord.status, func.count(SessionRecord.id))
+        .filter(base_filter)
+        .group_by(SessionRecord.status)
+        .all()
+    )
+
+    mode_counts = dict(
+        db.query(SessionRecord.mode, func.count(SessionRecord.id))
+        .filter(base_filter)
+        .group_by(SessionRecord.mode)
+        .all()
+    )
+
+    total_words = (
+        db.query(func.coalesce(func.sum(SessionRecord.word_count), 0))
+        .filter(base_filter)
+        .scalar()
+        or 0
+    )
+
+    with_output = (
+        db.query(func.count(func.distinct(Output.session_id)))
+        .join(SessionRecord, SessionRecord.id == Output.session_id)
+        .filter(
+            base_filter,
+            or_(Output.ai_json.isnot(None), Output.edited_json.isnot(None)),
+        )
+        .scalar()
+        or 0
+    )
+
+    return SessionStatsResponse(
+        total=total,
+        draft=status_counts.get("draft", 0),
+        processing=status_counts.get("processing", 0),
+        ready=status_counts.get("ready", 0),
+        error=status_counts.get("error", 0),
+        meeting=mode_counts.get("meeting", 0),
+        interview=mode_counts.get("interview", 0),
+        with_output=with_output,
+        total_words=int(total_words),
+    )
 
 
 @router.post("", response_model=SessionDetail, status_code=status.HTTP_201_CREATED)

@@ -44,3 +44,15 @@ class SessionListResponse(BaseModel):
     items: list[SessionListItem]
     total: int
     query: str | None = None
+
+
+class SessionStatsResponse(BaseModel):
+    total: int
+    draft: int
+    processing: int
+    ready: int
+    error: int
+    meeting: int
+    interview: int
+    with_output: int
+    total_words: int
