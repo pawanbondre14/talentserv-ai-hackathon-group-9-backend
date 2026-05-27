@@ -1,0 +1,29 @@
+WEBVTT
+
+1
+00:00:01.000 --> 00:00:05.000
+Alex: Welcome everyone to sprint planning.
+
+2
+00:00:05.500 --> 00:00:12.000
+Jordan: We need to finalize the API spec before the feature freeze.
+
+3
+00:00:12.500 --> 00:00:18.000
+Alex: Decision: we ship MVP by June 15 given customer commitments.
+
+4
+00:00:18.500 --> 00:00:24.000
+Jordan: I will own the API spec. Priority is high, due next Friday.
+
+5
+00:00:24.500 --> 00:00:30.000
+Alex: Risk — backend team is at capacity with two engineers on leave.
+
+6
+00:00:30.500 --> 00:00:36.000
+Sam: We are deferring push notifications to version two.
+
+7
+00:00:36.500 --> 00:00:40.000
+Alex: Follow up on hiring plan in next week's staff meeting.

@@ -1,0 +1,312 @@
+All-Hands Product & Engineering Sync — Multi-Segment Recording
+Date: May 26, 2026 | Duration: ~95 minutes | Location: Zoom
+
+--- Segment 1 (minutes 00-08) ---
+Alex Chen: Let's review sprint 1 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 61% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 21. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 2 (minutes 08-16) ---
+Alex Chen: Let's review sprint 2 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 62% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 22. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 3 (minutes 16-24) ---
+Alex Chen: Let's review sprint 3 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 63% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 23. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 4 (minutes 24-32) ---
+Alex Chen: Let's review sprint 4 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 64% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 24. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 5 (minutes 32-40) ---
+Alex Chen: Let's review sprint 5 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 65% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 25. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 6 (minutes 40-48) ---
+Alex Chen: Let's review sprint 6 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 66% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 26. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 7 (minutes 48-56) ---
+Alex Chen: Let's review sprint 7 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 67% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 27. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 8 (minutes 56-64) ---
+Alex Chen: Let's review sprint 8 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 68% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 20. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 9 (minutes 64-72) ---
+Alex Chen: Let's review sprint 9 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 69% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 21. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 10 (minutes 72-80) ---
+Alex Chen: Let's review sprint 10 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 70% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 22. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 11 (minutes 80-88) ---
+Alex Chen: Let's review sprint 11 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 71% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 23. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 12 (minutes 88-96) ---
+Alex Chen: Let's review sprint 12 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 72% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 24. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 13 (minutes 96-104) ---
+Alex Chen: Let's review sprint 13 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 73% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 25. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 14 (minutes 104-112) ---
+Alex Chen: Let's review sprint 14 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 74% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 26. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 15 (minutes 112-120) ---
+Alex Chen: Let's review sprint 15 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 75% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 27. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 16 (minutes 120-128) ---
+Alex Chen: Let's review sprint 16 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 76% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 20. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 17 (minutes 128-136) ---
+Alex Chen: Let's review sprint 17 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 77% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 21. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 18 (minutes 136-144) ---
+Alex Chen: Let's review sprint 18 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 78% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 22. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 19 (minutes 144-152) ---
+Alex Chen: Let's review sprint 19 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 79% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 23. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 20 (minutes 152-160) ---
+Alex Chen: Let's review sprint 20 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 80% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 24. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 21 (minutes 160-168) ---
+Alex Chen: Let's review sprint 21 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 81% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 25. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 22 (minutes 168-176) ---
+Alex Chen: Let's review sprint 22 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 82% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 26. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 23 (minutes 176-184) ---
+Alex Chen: Let's review sprint 23 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 83% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 27. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 24 (minutes 184-192) ---
+Alex Chen: Let's review sprint 24 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 84% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 20. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 25 (minutes 192-200) ---
+Alex Chen: Let's review sprint 25 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 85% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 21. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 26 (minutes 200-208) ---
+Alex Chen: Let's review sprint 26 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 86% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 22. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 27 (minutes 208-216) ---
+Alex Chen: Let's review sprint 27 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 87% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 4 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 23. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 28 (minutes 216-224) ---
+Alex Chen: Let's review sprint 28 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 88% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 5 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 24. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 29 (minutes 224-232) ---
+Alex Chen: Let's review sprint 29 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 89% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 6 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 25. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 30 (minutes 232-240) ---
+Alex Chen: Let's review sprint 30 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 90% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 2 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 26. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.
+
+--- Segment 31 (minutes 240-248) ---
+Alex Chen: Let's review sprint 31 deliverables. Portal auth is stable. Processing pipeline needs load testing before pilot.
+Jordan Rivera: Engineering completed 91% of API v1 endpoints. Remaining work: webhook design doc and export PDF fix for long lists.
+Sam Patel: Database pooler migration resolved Tuesday's 503s. Action item: document Supabase transaction URI for all environments.
+Maria Gonzalez: QA filed 3 bugs this sprint. Regression scheduled after LangGraph enablement. Blind mode blocked pending legal.
+Alex Chen: Decision: defer webhooks to v1.1. Ship polling guide by May 27. Acme pilot stays on June 12.
+Jordan Rivera: Risk: concurrent AI process calls untested above ten sessions. k6 load test targets fifty mocks by May 27.
+Sam Patel: Teams import works for three of four tenants. Conditional access blocks one enterprise account — troubleshooting doc due June 1.
+Maria Gonzalez: Follow-up: autosave debounce fix and PDF truncation assigned to Priya and Carlos respectively.

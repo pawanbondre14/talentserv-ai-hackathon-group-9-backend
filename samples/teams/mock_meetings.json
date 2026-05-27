@@ -1,0 +1,23 @@
+[
+  {
+    "id": "mock-sprint-planning",
+    "title": "Sprint Planning — Demo",
+    "date": "2026-05-20T10:00:00Z",
+    "source": "mock",
+    "transcript_file": "sprint_planning.vtt"
+  },
+  {
+    "id": "mock-product-review",
+    "title": "Product Review — Q2",
+    "date": "2026-05-18T14:30:00Z",
+    "source": "mock",
+    "transcript_file": "product_review.vtt"
+  },
+  {
+    "id": "mock-interview-panel",
+    "title": "Interview — Backend Engineer",
+    "date": "2026-05-17T09:00:00Z",
+    "source": "mock",
+    "transcript_file": "interview_panel.vtt"
+  }
+]

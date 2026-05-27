@@ -1,0 +1,11 @@
+{
+  "id": "frontend",
+  "title": "Frontend Engineer",
+  "criteria": [
+    { "id": "react", "label": "React / modern UI", "weight": 1.2 },
+    { "id": "ux", "label": "UX sensibility", "weight": 1.0 },
+    { "id": "performance", "label": "Web performance", "weight": 1.0 },
+    { "id": "testing", "label": "Testing & quality", "weight": 0.9 },
+    { "id": "communication", "label": "Communication", "weight": 0.8 }
+  ]
+}

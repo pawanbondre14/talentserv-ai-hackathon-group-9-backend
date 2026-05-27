@@ -1,0 +1,395 @@
+Interview Transcript — Senior Backend Engineer (Extended Panel Round)
+Interviewers: Priya Sharma (EM), David Okonkwo (Staff), Lisa Tran (Peer)
+Candidate: Jordan Kim | Date: May 26, 2026 | Duration: ~75 minutes
+
+=== Round 1: Technical depth ===
+Interviewer: Walk me through how you designed system 1 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 150000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 2: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 2 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 200000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 3: Technical depth ===
+Interviewer: Walk me through how you designed system 3 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 250000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 4: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 4 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 300000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 5: Technical depth ===
+Interviewer: Walk me through how you designed system 5 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 350000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 6: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 6 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 400000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 7: Technical depth ===
+Interviewer: Walk me through how you designed system 7 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 450000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 8: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 8 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 500000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 9: Technical depth ===
+Interviewer: Walk me through how you designed system 9 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 550000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 10: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 10 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 600000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 11: Technical depth ===
+Interviewer: Walk me through how you designed system 11 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 650000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 12: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 12 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 700000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 13: Technical depth ===
+Interviewer: Walk me through how you designed system 13 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 750000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 14: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 14 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 800000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 15: Technical depth ===
+Interviewer: Walk me through how you designed system 15 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 850000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 16: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 16 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 900000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 17: Technical depth ===
+Interviewer: Walk me through how you designed system 17 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 950000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 18: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 18 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1000000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 19: Technical depth ===
+Interviewer: Walk me through how you designed system 19 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1050000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 20: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 20 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1100000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 21: Technical depth ===
+Interviewer: Walk me through how you designed system 21 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1150000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 22: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 22 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1200000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 23: Technical depth ===
+Interviewer: Walk me through how you designed system 23 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1250000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 24: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 24 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1300000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 25: Technical depth ===
+Interviewer: Walk me through how you designed system 25 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1350000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 26: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 26 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1400000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 27: Technical depth ===
+Interviewer: Walk me through how you designed system 27 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1450000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 28: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 28 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1500000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 29: Technical depth ===
+Interviewer: Walk me through how you designed system 29 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1550000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+=== Round 30: Behavioral & collaboration ===
+Interviewer: Walk me through how you designed system 30 for high availability.
+Candidate: I used partitioned queues, idempotent workers, and a reconciliation job. We measured duplicate rate under 0.01% at 1600000 tasks per minute.
+Interviewer: How did you handle a production incident involving database connectivity?
+Candidate: We switched to the transaction pooler, encoded special characters in DATABASE_URL, and added startup validation logs.
+Interviewer: Describe your experience with LangGraph or multi-step AI pipelines.
+Candidate: We prototyped map-reduce summarization in staging. Phase A wraps single-shot; Phase B adds chunk workers for long meetings.
+Interviewer: Tell me about a time you pushed back on scope.
+Candidate: I negotiated webhooks to v1.1 and delivered polling documentation within the same week to unblock integrators.
+Priya Sharma: Any concerns or strengths to note before we move on?
+David Okonkwo: Strong on ownership and incident response. Gap on multi-region failover depth.
+Lisa Tran: Communication is clear; would like more examples mentoring junior engineers.
+
+Priya Sharma: Thanks Jordan. We'll debrief and respond within three business days.
