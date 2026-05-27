@@ -10,11 +10,30 @@ from app.routes.sessions import _word_count
 from app.schemas.session import SessionDetail
 from app.services.normalize import normalize_transcript
 from app.services.search_index import build_search_blob
+from app.services.vtt_parser import vtt_to_plain_text
 
 router = APIRouter()
 
-ALLOWED_EXTENSIONS = {".txt"}
+ALLOWED_EXTENSIONS = {".txt", ".vtt"}
 MAX_BYTES = 2 * 1024 * 1024
+
+
+def _decode_upload(raw: bytes) -> str:
+    try:
+        return raw.decode("utf-8")
+    except UnicodeDecodeError:
+        try:
+            return raw.decode("latin-1")
+        except UnicodeDecodeError as exc:
+            raise HTTPException(
+                400, detail="File must be UTF-8 or Latin-1 text."
+            ) from exc
+
+
+def _parse_upload_body(body: str, ext: str) -> str:
+    if ext == ".vtt" or body.strip().upper().startswith("WEBVTT"):
+        return vtt_to_plain_text(body)
+    return body
 
 
 @router.post("/upload", response_model=SessionDetail, status_code=201)
@@ -33,21 +52,15 @@ async def upload_transcript_file(
     if ext not in ALLOWED_EXTENSIONS:
         raise HTTPException(
             400,
-            detail="Only .txt uploads are supported. Paste text or save your file as .txt first.",
+            detail="Only .txt and .vtt uploads are supported.",
         )
 
     raw = await file.read()
     if len(raw) > MAX_BYTES:
         raise HTTPException(400, detail="File too large (max 2 MB).")
 
-    try:
-        text = raw.decode("utf-8")
-    except UnicodeDecodeError:
-        try:
-            text = raw.decode("latin-1")
-        except UnicodeDecodeError as exc:
-            raise HTTPException(400, detail="File must be UTF-8 or Latin-1 text.") from exc
-
+    body = _decode_upload(raw)
+    text = _parse_upload_body(body, ext)
     normalized = normalize_transcript(text)
     wc = _word_count(normalized)
     if wc < 1:
