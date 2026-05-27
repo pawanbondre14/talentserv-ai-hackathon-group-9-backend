@@ -44,7 +44,12 @@ class Settings(BaseSettings):
     clerk_issuer: str = ""
     clerk_jwks_url: str = ""
     skip_auth: bool = False
-    dev_user_id: str = "dev_user_local"
+    dev_user_id: str = ""
+
+    # RBAC (hybrid: Clerk JWT claims + DB roles/overrides)
+    clerk_roles_claim: str = "roles"
+    clerk_permissions_claim: str = "permissions"
+    default_user_role: str = "recruiter"
 
     anthropic_api_key: str = ""
     openai_api_key: str = ""

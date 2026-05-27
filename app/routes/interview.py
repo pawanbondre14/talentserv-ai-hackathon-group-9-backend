@@ -1,7 +1,8 @@
 from fastapi import APIRouter, Depends
 
-from app.auth import AuthUser, get_current_user
+from app.constants.permissions import INTERVIEW_PROCESS, INTERVIEW_READ
 from app.config import Settings, get_settings
+from app.dependencies.authz import Principal, require_permission
 from app.schemas.interview import PanelMergeRequest, ScorecardTemplate
 from app.services.interview_processor import process_interview
 from app.services.scorecards import list_scorecards
@@ -10,7 +11,7 @@ router = APIRouter()
 
 
 @router.get("/scorecards", response_model=list[ScorecardTemplate])
-def get_scorecards(_auth: AuthUser = Depends(get_current_user)):
+def get_scorecards(_principal: Principal = Depends(require_permission(INTERVIEW_READ))):
     return list_scorecards()
 
 
@@ -18,7 +19,7 @@ def get_scorecards(_auth: AuthUser = Depends(get_current_user)):
 def merge_panel_transcripts(
     body: PanelMergeRequest,
     settings: Settings = Depends(get_settings),
-    _auth: AuthUser = Depends(get_current_user),
+    _principal: Principal = Depends(require_permission(INTERVIEW_PROCESS)),
 ):
     """Preview consolidated panel feedback without creating a session."""
     from app.schemas.interview import InterviewProcessOptions

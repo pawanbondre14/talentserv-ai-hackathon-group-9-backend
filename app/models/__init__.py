@@ -1,3 +1,4 @@
+from app.models.rbac import Permission, Role, RolePermission, UserPermissionOverride, UserRole
 from app.models.tables import (
     ChatMessage,
     InterviewMeta,
@@ -12,4 +13,9 @@ __all__ = [
     "Output",
     "ChatMessage",
     "InterviewMeta",
+    "Role",
+    "Permission",
+    "RolePermission",
+    "UserRole",
+    "UserPermissionOverride",
 ]

@@ -3,8 +3,9 @@ import uuid
 from fastapi import APIRouter, Depends, File, HTTPException, UploadFile
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user, get_or_create_db_user
+from app.constants.permissions import INGEST_UPLOAD
 from app.database import get_db
+from app.dependencies.authz import Principal, require_permission
 from app.models import SessionRecord
 from app.routes.sessions import _word_count
 from app.schemas.session import SessionDetail
@@ -23,7 +24,7 @@ async def upload_transcript_file(
     mode: str = "meeting",
     title: str | None = None,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INGEST_UPLOAD)),
 ):
     if mode not in ("meeting", "interview"):
         raise HTTPException(400, detail="Choose mode: meeting or interview.")
@@ -53,11 +54,10 @@ async def upload_transcript_file(
     if wc < 1:
         raise HTTPException(400, detail="File is empty or has no readable text.")
 
-    user = get_or_create_db_user(db, auth)
     session_title = title or filename.rsplit(".", 1)[0] or "Uploaded session"
 
     session = SessionRecord(
-        user_id=user.id,
+        user_id=principal.user_id,
         title=session_title[:500],
         mode=mode,
         source="upload",

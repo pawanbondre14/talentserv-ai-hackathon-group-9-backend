@@ -24,6 +24,7 @@ def _get_jwks_client(jwks_url: str) -> PyJWKClient:
 class AuthUser:
     clerk_user_id: str
     email: str | None = None
+    jwt_claims: dict | None = None
 
 
 def _normalize_issuer(issuer: str) -> str:
@@ -73,7 +74,7 @@ def verify_clerk_token(token: str, settings: Settings) -> AuthUser:
         if emails:
             email = emails[0]
 
-    return AuthUser(clerk_user_id=sub, email=email)
+    return AuthUser(clerk_user_id=sub, email=email, jwt_claims=dict(payload))
 
 
 async def get_current_user(
@@ -81,7 +82,11 @@ async def get_current_user(
     settings: Settings = Depends(get_settings),
 ) -> AuthUser:
     if settings.skip_auth:
-        return AuthUser(clerk_user_id=settings.dev_user_id, email="dev@local.test")
+        return AuthUser(
+            clerk_user_id=settings.dev_user_id,
+            email="dev@local.test",
+            jwt_claims={"roles": ["admin"], "permissions": list()},
+        )
 
     if credentials is None or credentials.scheme.lower() != "bearer":
         raise HTTPException(

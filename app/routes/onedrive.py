@@ -3,10 +3,11 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user
+from app.constants.permissions import INTEGRATIONS_ONEDRIVE
 from app.config import Settings, get_settings
 from app.database import get_db
-from app.errors import get_db_user_or_503, http_exception_from_import
+from app.dependencies.authz import Principal, require_permission
+from app.errors import http_exception_from_import
 from app.schemas.teams import (
     OneDriveBrowseItem,
     OneDriveBrowseResponse,
@@ -26,10 +27,10 @@ logger = logging.getLogger(__name__)
 async def browse_onedrive_folder(
     folder_id: str = Query(default="root"),
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_ONEDRIVE)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
     service = TeamsService(settings)
     result = await service.browse_folder(user, db, folder_id)
     return OneDriveBrowseResponse(
@@ -55,10 +56,10 @@ async def browse_onedrive_folder(
 @router.get("/recordings", response_model=TeamsTranscriptListResponse)
 async def list_onedrive_recordings(
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_ONEDRIVE)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
     service = TeamsService(settings)
     items, mode = await service.list_transcripts(user, db)
     return TeamsTranscriptListResponse(
@@ -81,10 +82,10 @@ async def list_onedrive_recordings(
 async def import_onedrive_file(
     body: OneDriveImportRequest,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_ONEDRIVE)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
 
     try:
         session, wc = await import_transcript_to_session(

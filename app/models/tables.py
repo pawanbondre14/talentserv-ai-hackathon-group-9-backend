@@ -35,6 +35,11 @@ class User(Base):
     )
 
     sessions: Mapped[list["SessionRecord"]] = relationship(back_populates="user")
+    user_roles: Mapped[list["UserRole"]] = relationship(
+        "UserRole",
+        cascade="all, delete-orphan",
+        passive_deletes=True,
+    )
 
 
 class SessionRecord(Base):

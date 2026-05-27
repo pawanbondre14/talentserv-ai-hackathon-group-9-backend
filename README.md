@@ -112,6 +112,9 @@ START → preprocess → budget_check → route_strategy
 |--------|------|---------|
 | GET | `/api/health` | Health check |
 | GET | `/api/health/db` | Database connectivity |
+| GET | `/api/me` | Current user, roles, and effective permissions |
+| POST | `/api/admin/users/{id}/roles` | Assign role (`rbac:manage`) |
+| POST | `/api/admin/users/{id}/overrides` | Grant/deny permission override (`rbac:manage`) |
 | POST | `/api/sessions` | Create session |
 | GET | `/api/sessions` | List sessions |
 | GET | `/api/sessions/search` | Full-text search |
@@ -157,6 +160,8 @@ Copy `.env.example` → `.env`.
 | `DATABASE_URL` | Yes | Supabase Postgres URI (pooler port **6543** on serverless) |
 | `CLERK_ISSUER`, `CLERK_JWKS_URL` | Prod | Must match frontend Clerk app |
 | `SKIP_AUTH`, `DEV_USER_ID` | Local only | Dev without Clerk |
+| `CLERK_ROLES_CLAIM`, `CLERK_PERMISSIONS_CLAIM` | No | JWT claim names for hybrid RBAC (default `roles`, `permissions`) |
+| `DEFAULT_USER_ROLE` | No | Role assigned on first login if none in DB (default `recruiter`) |
 | `OPENAI_API_KEY` | Yes* | *Or `LLM_MOCK=true` |
 | `LANGGRAPH_ENABLED` | No | `true` to use graph pipeline |
 | `MULTI_WORD_THRESHOLD` | No | Auto multi-agent threshold (default 800) |
@@ -177,7 +182,9 @@ pip install -r requirements.txt
 copy .env.example .env
 ```
 
-1. Create a [Supabase](https://supabase.com) project and run `supabase/migrations/001_initial_schema.sql` in the SQL Editor.
+1. Create a [Supabase](https://supabase.com) project and run migrations in the SQL Editor:
+   - `supabase/migrations/001_initial_schema.sql`
+   - `supabase/migrations/002_rbac.sql`
 2. Set `DATABASE_URL` (use the **Transaction pooler**, port **6543**, for serverless).
 3. Create a [Clerk](https://clerk.com) app; set `CLERK_ISSUER` and `CLERK_JWKS_URL`.
 4. Set `OPENAI_API_KEY` or `LLM_MOCK=true`. For multi-agent demo: `LANGGRAPH_ENABLED=true`.

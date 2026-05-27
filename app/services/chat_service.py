@@ -32,6 +32,10 @@ def _get_session_for_user(
 
 def list_messages(db: Session, user_id: uuid.UUID, session_id: uuid.UUID) -> list[ChatMessage]:
     _get_session_for_user(db, user_id, session_id)
+    return list_messages_for_session(db, session_id)
+
+
+def list_messages_for_session(db: Session, session_id: uuid.UUID) -> list[ChatMessage]:
     return (
         db.query(ChatMessage)
         .filter(ChatMessage.session_id == session_id)
@@ -42,6 +46,10 @@ def list_messages(db: Session, user_id: uuid.UUID, session_id: uuid.UUID) -> lis
 
 def clear_messages(db: Session, user_id: uuid.UUID, session_id: uuid.UUID) -> int:
     _get_session_for_user(db, user_id, session_id)
+    return clear_messages_for_session(db, session_id)
+
+
+def clear_messages_for_session(db: Session, session_id: uuid.UUID) -> int:
     count = (
         db.query(ChatMessage)
         .filter(ChatMessage.session_id == session_id)
@@ -87,13 +95,23 @@ def send_message(
     session_id: uuid.UUID,
     content: str,
 ) -> tuple[ChatMessage, ChatMessage, str]:
+    _get_session_for_user(db, user_id, session_id)
+    return send_message_for_session(db, settings, session_id, content)
+
+
+def send_message_for_session(
+    db: Session,
+    settings: Settings,
+    session_id: uuid.UUID,
+    content: str,
+) -> tuple[ChatMessage, ChatMessage, str]:
     session = (
         db.query(SessionRecord)
         .options(
             joinedload(SessionRecord.output),
             joinedload(SessionRecord.interview_meta),
         )
-        .filter(SessionRecord.id == session_id, SessionRecord.user_id == user_id)
+        .filter(SessionRecord.id == session_id)
         .first()
     )
     if not session:

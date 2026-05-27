@@ -80,6 +80,17 @@ def _http_from_graph_status(status_code: int) -> HTTPException:
     return HTTPException(status_code=502, detail=GRAPH_UNAVAILABLE)
 
 
+def raise_forbidden(required_permission: str) -> None:
+    raise HTTPException(
+        status_code=403,
+        detail={
+            "code": "forbidden",
+            "message": "You do not have permission to perform this action.",
+            "required_permission": required_permission,
+        },
+    )
+
+
 def oauth_redirect_message(code: str | None) -> str:
     """Map Microsoft OAuth error codes to stable frontend message keys."""
     if not code:

@@ -5,9 +5,10 @@ import uuid
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, joinedload
 
-from app.auth import AuthUser, get_current_user, get_or_create_db_user
+from app.constants.permissions import OUTPUT_EDIT, SESSIONS_PROCESS, SESSIONS_READ
 from app.config import Settings, get_settings
 from app.database import get_db
+from app.dependencies.authz import Principal, get_session_for_principal, require_permission
 from app.errors import AI_PROCESSING_FAILED
 from app.models import Output, SessionRecord
 from app.routes.sessions import _word_count
@@ -24,29 +25,24 @@ router = APIRouter()
 logger = logging.getLogger(__name__)
 
 
-def _get_user_session(db: Session, user_id: uuid.UUID, session_id: uuid.UUID) -> SessionRecord:
+@router.get("/{session_id}/full", response_model=SessionWithOutput)
+def get_session_with_output(
+    session_id: uuid.UUID,
+    db: Session = Depends(get_db),
+    principal: Principal = Depends(require_permission(SESSIONS_READ)),
+):
     session = (
         db.query(SessionRecord)
         .options(
             joinedload(SessionRecord.output),
             joinedload(SessionRecord.interview_meta),
         )
-        .filter(SessionRecord.id == session_id, SessionRecord.user_id == user_id)
+        .filter(SessionRecord.id == session_id)
         .first()
     )
     if not session:
         raise HTTPException(status_code=404, detail="Session not found.")
-    return session
-
-
-@router.get("/{session_id}/full", response_model=SessionWithOutput)
-def get_session_with_output(
-    session_id: uuid.UUID,
-    db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
-):
-    user = get_or_create_db_user(db, auth)
-    session = _get_user_session(db, user.id, session_id)
+    get_session_for_principal(db, principal, session_id, read=True)
     out = session.output
     payload = SessionDetail.model_validate(session).model_dump()
     payload["output"] = OutputSchema.model_validate(out) if out else None
@@ -60,11 +56,21 @@ def process_session(
     session_id: uuid.UUID,
     body: ProcessRequest | None = None,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_PROCESS)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_or_create_db_user(db, auth)
-    session = _get_user_session(db, user.id, session_id)
+    session = (
+        db.query(SessionRecord)
+        .options(
+            joinedload(SessionRecord.output),
+            joinedload(SessionRecord.interview_meta),
+        )
+        .filter(SessionRecord.id == session_id)
+        .first()
+    )
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found.")
+    get_session_for_principal(db, principal, session_id, read=False)
 
     raw = session.transcript_text or ""
     normalized = normalize_transcript(raw)
@@ -86,7 +92,7 @@ def process_session(
         session_id,
         session.mode,
         mode_label,
-        auth.clerk_user_id,
+        principal.clerk_user_id,
         wc,
         provider,
         truncated,
@@ -183,10 +189,17 @@ def update_output(
     session_id: uuid.UUID,
     body: OutputUpdate,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(OUTPUT_EDIT)),
 ):
-    user = get_or_create_db_user(db, auth)
-    session = _get_user_session(db, user.id, session_id)
+    session = (
+        db.query(SessionRecord)
+        .options(joinedload(SessionRecord.output))
+        .filter(SessionRecord.id == session_id)
+        .first()
+    )
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found.")
+    get_session_for_principal(db, principal, session_id, read=False)
     if not session.output:
         raise HTTPException(status_code=404, detail="No output for this session. Run process first.")
 

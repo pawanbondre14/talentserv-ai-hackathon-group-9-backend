@@ -5,8 +5,9 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import RedirectResponse
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user
-from app.errors import get_db_user_or_503, oauth_redirect_message
+from app.constants.permissions import INTEGRATIONS_MICROSOFT
+from app.dependencies.authz import Principal, require_permission
+from app.errors import oauth_redirect_message
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.schemas.teams import MicrosoftStatusResponse
@@ -29,10 +30,10 @@ def _oauth_redirect(frontend: str, teams: str, message: str) -> RedirectResponse
 @router.get("/status", response_model=MicrosoftStatusResponse)
 def microsoft_status(
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_MICROSOFT)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
     azure_ok = bool(settings.azure_client_id and settings.azure_client_secret)
     return MicrosoftStatusResponse(
         connected=bool(user.ms_refresh_token_enc),
@@ -43,8 +44,7 @@ def microsoft_status(
 
 @router.get("/auth-url")
 def microsoft_auth_url(
-    db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_MICROSOFT)),
     settings: Settings = Depends(get_settings),
 ):
     if not settings.azure_client_id or not settings.azure_redirect_uri:
@@ -52,8 +52,7 @@ def microsoft_auth_url(
             503,
             detail="Microsoft integration is not configured on the server. Use demo folders or ask an admin to set Azure env vars.",
         )
-    get_db_user_or_503(db, auth)
-    url = build_authorize_url(settings, auth.clerk_user_id)
+    url = build_authorize_url(settings, principal.clerk_user_id)
     return {"url": url}
 
 
@@ -99,9 +98,9 @@ async def microsoft_callback(
 @router.post("/disconnect")
 def microsoft_disconnect(
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_MICROSOFT)),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
     user.ms_refresh_token_enc = None
     db.commit()
     return {"status": "disconnected"}

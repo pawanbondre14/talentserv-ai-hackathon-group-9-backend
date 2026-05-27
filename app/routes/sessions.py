@@ -4,8 +4,15 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy import Text, cast, or_
 from sqlalchemy.orm import Session, joinedload
 
-from app.auth import AuthUser, get_current_user, get_or_create_db_user
+from app.constants.permissions import (
+    SESSIONS_CREATE,
+    SESSIONS_DELETE,
+    SESSIONS_READ,
+    SESSIONS_READ_ALL,
+    SESSIONS_WRITE,
+)
 from app.database import get_db
+from app.dependencies.authz import Principal, get_current_principal, get_session_for_principal, require_permission
 from app.models import Output, SessionRecord
 from app.schemas import SessionCreate, SessionDetail, SessionListItem, SessionListResponse, SessionUpdate
 from app.services.search_index import build_search_blob, extract_snippet
@@ -27,14 +34,14 @@ def list_sessions(
     limit: int = Query(20, ge=1, le=100),
     offset: int = Query(0, ge=0),
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_READ)),
 ):
-    user = get_or_create_db_user(db, auth)
     id_query = (
         db.query(SessionRecord.id, SessionRecord.updated_at)
         .outerjoin(Output, Output.session_id == SessionRecord.id)
-        .filter(SessionRecord.user_id == user.id)
     )
+    if not principal.can(SESSIONS_READ_ALL):
+        id_query = id_query.filter(SessionRecord.user_id == principal.user_id)
 
     if mode in ("meeting", "interview"):
         id_query = id_query.filter(SessionRecord.mode == mode)
@@ -100,15 +107,14 @@ def list_sessions(
 def create_session(
     body: SessionCreate,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_CREATE)),
 ):
-    user = get_or_create_db_user(db, auth)
     transcript = body.transcript_text or ""
     wc = _word_count(transcript)
     title = body.title or (transcript[:80] + "…" if len(transcript) > 80 else transcript) or "Untitled session"
 
     session = SessionRecord(
-        user_id=user.id,
+        user_id=principal.user_id,
         title=title.strip() or "Untitled session",
         mode=body.mode,
         source=body.source,
@@ -127,16 +133,9 @@ def create_session(
 def get_session(
     session_id: uuid.UUID,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_READ)),
 ):
-    user = get_or_create_db_user(db, auth)
-    session = (
-        db.query(SessionRecord)
-        .filter(SessionRecord.id == session_id, SessionRecord.user_id == user.id)
-        .first()
-    )
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found.")
+    session = get_session_for_principal(db, principal, session_id, read=True)
     return session
 
 
@@ -145,17 +144,17 @@ def update_session(
     session_id: uuid.UUID,
     body: SessionUpdate,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_WRITE)),
 ):
-    user = get_or_create_db_user(db, auth)
     session = (
         db.query(SessionRecord)
         .options(joinedload(SessionRecord.output))
-        .filter(SessionRecord.id == session_id, SessionRecord.user_id == user.id)
+        .filter(SessionRecord.id == session_id)
         .first()
     )
     if not session:
         raise HTTPException(status_code=404, detail="Session not found.")
+    get_session_for_principal(db, principal, session_id, read=False)
 
     if body.title is not None:
         session.title = body.title
@@ -177,15 +176,8 @@ def update_session(
 def delete_session(
     session_id: uuid.UUID,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(SESSIONS_DELETE)),
 ):
-    user = get_or_create_db_user(db, auth)
-    session = (
-        db.query(SessionRecord)
-        .filter(SessionRecord.id == session_id, SessionRecord.user_id == user.id)
-        .first()
-    )
-    if not session:
-        raise HTTPException(status_code=404, detail="Session not found.")
+    session = get_session_for_principal(db, principal, session_id, read=False)
     db.delete(session)
     db.commit()

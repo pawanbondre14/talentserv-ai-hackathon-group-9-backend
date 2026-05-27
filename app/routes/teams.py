@@ -3,8 +3,9 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from app.auth import AuthUser, get_current_user
-from app.errors import get_db_user_or_503, http_exception_from_import
+from app.constants.permissions import INTEGRATIONS_TEAMS
+from app.dependencies.authz import Principal, require_permission
+from app.errors import http_exception_from_import
 from app.config import Settings, get_settings
 from app.database import get_db
 from app.schemas.teams import (
@@ -23,10 +24,10 @@ logger = logging.getLogger(__name__)
 @router.get("/transcripts", response_model=TeamsTranscriptListResponse)
 async def list_teams_transcripts(
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_TEAMS)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
     service = TeamsService(settings)
     items, mode = await service.list_transcripts(user, db)
     return TeamsTranscriptListResponse(
@@ -49,10 +50,10 @@ async def list_teams_transcripts(
 async def import_teams_transcript(
     body: TeamsImportRequest,
     db: Session = Depends(get_db),
-    auth: AuthUser = Depends(get_current_user),
+    principal: Principal = Depends(require_permission(INTEGRATIONS_TEAMS)),
     settings: Settings = Depends(get_settings),
 ):
-    user = get_db_user_or_503(db, auth)
+    user = principal.db_user
 
     try:
         session, wc = await import_transcript_to_session(
